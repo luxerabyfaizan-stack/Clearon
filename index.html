@@ -6,159 +6,218 @@
 <title>CLEARON ERP</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--blue:#1677d2;--bg:#f4f7fb;--card:#fff;--text:#172033;--muted:#718096;--line:#e4e9f0}
+:root{--bg:#f5f7fb;--card:#fff;--text:#172033;--muted:#6b7280;--line:#e5e7eb;--primary:#0f766e;--danger:#b91c1c}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--text)}
-button,input,select,textarea{font:inherit}button{cursor:pointer;border:0;border-radius:9px;padding:10px 14px;background:var(--blue);color:#fff}
-button.secondary{background:#edf3fa;color:#1c3554}button.danger{background:#d64545}
-input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;background:#fff}
-.login{min-height:100vh;display:grid;place-items:center;padding:20px}.login .box{width:min(420px,100%);background:#fff;padding:28px;border-radius:18px;box-shadow:0 12px 40px #173a5b18}
-.logo{font-size:28px;font-weight:800;color:var(--blue)}.muted{color:var(--muted);font-size:13px}
-.layout{display:grid;grid-template-columns:230px 1fr;min-height:100vh}.side{background:#fff;border-right:1px solid var(--line);padding:18px;position:sticky;top:0;height:100vh}
-.nav{display:flex;flex-direction:column;gap:5px;margin-top:22px}.nav button{background:transparent;color:#40516a;text-align:left}.nav button.active,.nav button:hover{background:#edf5ff;color:var(--blue)}
-.main{padding:22px;max-width:1500px;width:100%}.top{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:20px}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card,.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}.stat{font-size:25px;font-weight:800;margin-top:7px}
-.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.toolbar>*{width:auto}.tablewrap{overflow:auto}.table{width:100%;border-collapse:collapse}.table th,.table td{padding:10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}.table th{font-size:12px;color:var(--muted)}
-.formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}
-.toast{position:fixed;right:18px;bottom:18px;background:#182333;color:#fff;padding:12px 15px;border-radius:10px;display:none;z-index:10}.hidden{display:none}
-@media(max-width:850px){.layout{grid-template-columns:1fr}.side{height:auto;position:relative;border-right:0;border-bottom:1px solid var(--line)}.nav{display:grid;grid-template-columns:repeat(3,1fr)}.grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:520px){.grid,.formgrid{grid-template-columns:1fr}.nav{grid-template-columns:repeat(2,1fr)}.main{padding:12px}}
+button,input,select,textarea{font:inherit}button{cursor:pointer;border:0;border-radius:9px;padding:10px 14px;background:var(--primary);color:#fff}
+button.secondary{background:#eef2f7;color:#172033}.danger{background:#b91c1c}
+.login{min-height:100vh;display:grid;place-items:center;padding:20px}.login-card{width:min(420px,100%);background:#fff;padding:32px;border-radius:18px;box-shadow:0 12px 40px #0001}
+.logo{font-size:28px;font-weight:800;letter-spacing:.5px}.sub{color:var(--muted);margin:7px 0 25px}
+.field{display:grid;gap:6px;margin:12px 0}.field label{font-size:13px;font-weight:700}.field input,.field select,.field textarea{width:100%;padding:11px;border:1px solid var(--line);border-radius:9px;background:#fff}
+.app{display:none;min-height:100vh}.sidebar{position:fixed;left:0;top:0;bottom:0;width:235px;background:#111827;color:#fff;padding:20px;overflow:auto}.brand{font-size:22px;font-weight:800;margin-bottom:25px}
+.nav button{display:block;width:100%;text-align:left;background:transparent;color:#d1d5db;margin:3px 0}.nav button:hover,.nav button.active{background:#ffffff15;color:#fff}
+.main{margin-left:235px;padding:25px}.top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:20px}.top h1{margin:0;font-size:25px}.top-actions{display:flex;gap:8px}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}.metric .label{color:var(--muted);font-size:13px}.metric .value{font-size:25px;font-weight:800;margin-top:6px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:15px}.panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:10px}.panel h3{margin:0}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:11px 8px;border-bottom:1px solid var(--line);font-size:13px}th{color:var(--muted);font-size:12px}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.form-grid .full{grid-column:1/-1}
+.actions{display:flex;gap:8px;flex-wrap:wrap}.hidden{display:none}.msg{margin-top:10px;color:var(--danger);font-size:13px}.hint{color:var(--muted);font-size:12px}
+.badge{display:inline-block;padding:4px 8px;border-radius:99px;background:#ecfdf5;color:#047857;font-size:11px}
+@media(max-width:900px){.sidebar{position:static;width:100%;height:auto}.main{margin-left:0}.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.grid,.form-grid{grid-template-columns:1fr}.main{padding:14px}.top{align-items:flex-start;flex-direction:column}}
 </style>
 </head>
 <body>
-<div id="login" class="login">
- <div class="box">
-  <div class="logo">CLEARON</div><h2>Business ERP</h2><p class="muted">Simple screen. Real Supabase database.</p>
-  <div class="field"><label>Email</label><input id="email" type="email" placeholder="owner@email.com"></div><br>
-  <div class="field"><label>Password</label><input id="password" type="password" placeholder="••••••••"></div><br>
-  <button onclick="login()">Login</button>
-  <button class="secondary" onclick="signup()">Create account</button>
-  <p id="loginMsg" class="muted"></p>
+
+<section id="login" class="login">
+ <div class="login-card">
+  <div class="logo">CLEARON</div>
+  <div class="sub">Simple Business Management</div>
+  <div class="field"><label>Email</label><input id="email" type="email" placeholder="Enter email"></div>
+  <div class="field"><label>Password</label><input id="password" type="password" placeholder="Enter password"></div>
+  <button style="width:100%" onclick="login()">Login</button>
+  <button class="secondary" style="width:100%;margin-top:8px" onclick="resetPassword()">Forgot password?</button>
+  <div id="loginMsg" class="msg"></div>
+  <p class="hint">Supabase URL and anon key are configured below in the source.</p>
  </div>
-</div>
-<div id="app" class="hidden">
- <div class="layout">
-  <aside class="side">
-   <div class="logo">CLEARON</div><div class="muted">Simple ERP</div>
-   <div class="nav" id="nav"></div>
-   <br><button class="secondary" onclick="logout()">Logout</button>
-  </aside>
-  <main class="main">
-   <div class="top"><div><h2 id="title" style="margin:0">Dashboard</h2><div class="muted" id="sub">Your business at a glance</div></div><div id="who" class="muted"></div></div>
-   <div id="content"></div>
-  </main>
- </div>
-</div>
-<div id="toast" class="toast"></div>
+</section>
+
+<section id="app" class="app">
+ <aside class="sidebar">
+  <div class="brand">CLEARON</div>
+  <div class="nav">
+   <button data-page="dashboard" onclick="showPage('dashboard')">Dashboard</button>
+   <button data-page="customers" onclick="showPage('customers')">Customers</button>
+   <button data-page="suppliers" onclick="showPage('suppliers')">Suppliers</button>
+   <button data-page="products" onclick="showPage('products')">Products</button>
+   <button data-page="inventory" onclick="showPage('inventory')">Inventory</button>
+   <button data-page="production" onclick="showPage('production')">Production</button>
+   <button data-page="sales" onclick="showPage('sales')">Sales</button>
+   <button data-page="deliveries" onclick="showPage('deliveries')">Deliveries</button>
+   <button data-page="payments" onclick="showPage('payments')">Payments</button>
+   <button data-page="expenses" onclick="showPage('expenses')">Expenses</button>
+   <button data-page="investors" onclick="showPage('investors')">Investors</button>
+   <button data-page="employees" onclick="showPage('employees')">Employees</button>
+   <button data-page="complaints" onclick="showPage('complaints')">Complaints</button>
+  </div>
+  <div style="margin-top:25px"><button class="secondary" style="width:100%" onclick="logout()">Logout</button></div>
+ </aside>
+
+ <main class="main">
+  <div class="top">
+   <div><h1 id="pageTitle">Dashboard</h1><div id="userText" class="hint"></div></div>
+   <div class="top-actions"><button class="secondary" onclick="refreshCurrent()">Refresh</button></div>
+  </div>
+
+  <div id="dashboard" class="page">
+   <div class="grid">
+    <div class="card metric"><div class="label">Customers</div><div id="mCustomers" class="value">0</div></div>
+    <div class="card metric"><div class="label">Products</div><div id="mProducts" class="value">0</div></div>
+    <div class="card metric"><div class="label">Today's Sales</div><div id="mSales" class="value">PKR 0</div></div>
+    <div class="card metric"><div class="label">Today's Expenses</div><div id="mExpenses" class="value">PKR 0</div></div>
+   </div>
+   <div class="panel"><h3>Quick actions</h3><div class="actions" style="margin-top:12px">
+    <button onclick="showPage('customers');openForm('customer')">+ Customer</button>
+    <button onclick="showPage('sales');openForm('sale')">+ Sale</button>
+    <button onclick="showPage('production');openForm('production')">+ Production</button>
+    <button onclick="showPage('expenses');openForm('expense')">+ Expense</button>
+   </div></div>
+  </div>
+
+  <div id="customers" class="page hidden"><div class="panel"><div class="panel-head"><h3>Customers</h3><button onclick="openForm('customer')">+ Add Customer</button></div><div id="customerForm" class="hidden"></div><div id="customerTable"></div></div></div>
+  <div id="suppliers" class="page hidden"><div class="panel"><div class="panel-head"><h3>Suppliers</h3><button onclick="openForm('supplier')">+ Add Supplier</button></div><div id="supplierForm" class="hidden"></div><div id="supplierTable"></div></div></div>
+  <div id="products" class="page hidden"><div class="panel"><div class="panel-head"><h3>Products</h3><button onclick="openForm('product')">+ Add Product</button></div><div id="productForm" class="hidden"></div><div id="productTable"></div></div></div>
+  <div id="inventory" class="page hidden"><div class="panel"><div class="panel-head"><h3>Inventory</h3><button onclick="openForm('inventory')">+ Receive Stock</button></div><div id="inventoryForm" class="hidden"></div><div id="inventoryTable"></div></div></div>
+  <div id="production" class="page hidden"><div class="panel"><div class="panel-head"><h3>Production</h3><button onclick="openForm('production')">+ New Production</button></div><div id="productionForm" class="hidden"></div><div id="productionTable"></div></div></div>
+  <div id="sales" class="page hidden"><div class="panel"><div class="panel-head"><h3>Sales Orders</h3><button onclick="openForm('sale')">+ New Sale</button></div><div id="saleForm" class="hidden"></div><div id="saleTable"></div></div></div>
+  <div id="deliveries" class="page hidden"><div class="panel"><div class="panel-head"><h3>Deliveries</h3><button onclick="openForm('delivery')">+ Delivery</button></div><div id="deliveryForm" class="hidden"></div><div id="deliveryTable"></div></div></div>
+  <div id="payments" class="page hidden"><div class="panel"><div class="panel-head"><h3>Payments</h3><button onclick="openForm('payment')">+ Payment</button></div><div id="paymentForm" class="hidden"></div><div id="paymentTable"></div></div></div>
+  <div id="expenses" class="page hidden"><div class="panel"><div class="panel-head"><h3>Expenses</h3><button onclick="openForm('expense')">+ Expense</button></div><div id="expenseForm" class="hidden"></div><div id="expenseTable"></div></div></div>
+  <div id="investors" class="page hidden"><div class="panel"><div class="panel-head"><h3>Investors</h3><button onclick="openForm('investor')">+ Investor</button></div><div id="investorForm" class="hidden"></div><div id="investorTable"></div></div></div>
+  <div id="employees" class="page hidden"><div class="panel"><div class="panel-head"><h3>Employees</h3><button onclick="openForm('employee')">+ Employee</button></div><div id="employeeForm" class="hidden"></div><div id="employeeTable"></div></div></div>
+  <div id="complaints" class="page hidden"><div class="panel"><div class="panel-head"><h3>Complaints</h3><button onclick="openForm('complaint')">+ Complaint</button></div><div id="complaintForm" class="hidden"></div><div id="complaintTable"></div></div></div>
+ </main>
+</section>
+
 <script>
-const SUPABASE_URL=localStorage.getItem('CLEARON_SUPABASE_URL')||'';
-const SUPABASE_KEY=localStorage.getItem('CLEARON_SUPABASE_KEY')||'';
-let sb=null, user=null;
-const menus=[
- ['dashboard','Dashboard'],['sales','Sales'],['customers','Customers'],['purchases','Purchases'],
- ['production','Production'],['inventory','Inventory'],['delivery','Delivery'],
- ['expenses','Expenses'],['cash','Cash & Bank'],['people','Employees'],
- ['partners','Partners'],['investors','Investors'],['reports','Reports'],['settings','Settings']
-];
-function toast(x){const e=document.getElementById('toast');e.textContent=x;e.style.display='block';setTimeout(()=>e.style.display='none',2800)}
-function esc(x){return String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
-function money(x){return 'PKR '+Number(x||0).toLocaleString()}
-function setMsg(x){document.getElementById('loginMsg').textContent=x}
-async function init(){
- if(!SUPABASE_URL||!SUPABASE_KEY){setMsg('Set CLEARON_SUPABASE_URL and CLEARON_SUPABASE_KEY in browser storage first.');return}
- sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
- const r=await sb.auth.getSession(); if(r.data.session) start(r.data.session.user);
- sb.auth.onAuthStateChange((_e,s)=>s?start(s.user):showLogin());
+/* =========================================================
+   1) PUT YOUR SUPABASE PROJECT VALUES HERE
+   ========================================================= */
+const SUPABASE_URL = "YOUR_SUPABASE_URL";
+const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let currentPage="dashboard";
+let currentUser=null;
+
+const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+const money=n=>"PKR "+Number(n||0).toLocaleString("en-PK",{maximumFractionDigits:2});
+const today=()=>new Date().toISOString().slice(0,10);
+
+async function login(){
+ const email=document.getElementById("email").value.trim(), password=document.getElementById("password").value;
+ const {data,error}=await sb.auth.signInWithPassword({email,password});
+ if(error){document.getElementById("loginMsg").textContent=error.message;return}
+ currentUser=data.user; await enterApp();
 }
-async function login(){if(!sb)return setMsg('Supabase settings missing.');setMsg('Logging in...');const {error}=await sb.auth.signInWithPassword({email:email.value,password:password.value});setMsg(error?error.message:'')}
-async function signup(){if(!sb)return setMsg('Supabase settings missing.');setMsg('Creating account...');const {error}=await sb.auth.signUp({email:email.value,password:password.value,data:{full_name:'CLEARON User'}});setMsg(error?error.message:'Account created. Check email if confirmation is enabled.')}
-async function logout(){await sb.auth.signOut()}
-function showLogin(){document.getElementById('login').classList.remove('hidden');document.getElementById('app').classList.add('hidden')}
-async function start(u){user=u;document.getElementById('login').classList.add('hidden');document.getElementById('app').classList.remove('hidden');document.getElementById('who').textContent=u.email;renderNav();open('dashboard')}
-function renderNav(){nav.innerHTML=menus.map(x=>`<button id="n-${x[0]}" onclick="open('${x[0]}')">${x[1]}</button>`).join('')}
-async function q(table,opts={}){let z=sb.from(table).select(opts.select||'*');if(opts.limit)z=z.limit(opts.limit);if(opts.order)z=z.order(opts.order,{ascending:false});return z}
-async function open(page){
- document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));document.getElementById('n-'+page)?.classList.add('active');
- const names=Object.fromEntries(menus);title.textContent=names[page]||page;
- try{
-  if(page==='dashboard') return dashboard();
-  if(page==='sales') return listSales();
-  if(page==='customers') return simpleList('customers','Customers',['name','phone','credit_limit']);
-  if(page==='purchases') return listPurchases();
-  if(page==='production') return production();
-  if(page==='inventory') return inventory();
-  if(page==='delivery') return simpleList('deliveries','Deliveries',['delivery_no','status','delivered_value','delivery_cost']);
-  if(page==='expenses') return simpleList('expenses','Expenses',['category','description','amount','expense_date']);
-  if(page==='cash') return simpleList('cash_transactions','Cash Transactions',['direction','amount','category','transaction_date']);
-  if(page==='people') return simpleList('employees','Employees',['name','designation','monthly_salary']);
-  if(page==='partners') return simpleList('partners','Partners',['name','share_pct','active']);
-  if(page==='investors') return simpleList('investors','Investors',['name','phone','active']);
-  if(page==='reports') return reports();
-  if(page==='settings') return settings();
- }catch(e){toast(e.message||'Something went wrong')}
+async function resetPassword(){
+ const email=document.getElementById("email").value.trim();
+ if(!email){document.getElementById("loginMsg").textContent="Enter your email first.";return}
+ const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.href});
+ document.getElementById("loginMsg").textContent=error?error.message:"Password reset email sent.";
 }
-async function dashboard(){
- const {data:d,error}=await sb.from('v_dashboard').select('*').single();if(error)throw error;
- content.innerHTML=`<div class="grid">
- <div class="card"><div class="muted">Sales</div><div class="stat">${money(d.revenue)}</div></div>
- <div class="card"><div class="muted">COGS</div><div class="stat">${money(d.cogs)}</div></div>
- <div class="card"><div class="muted">Expenses</div><div class="stat">${money(d.expenses)}</div></div>
- <div class="card"><div class="muted">Receivables</div><div class="stat">${money(d.receivables)}</div></div></div>
- <br><div class="panel"><h3>Quick actions</h3><div class="toolbar">
- <button onclick="open('sales')">New Sale</button><button onclick="open('purchases')">New Purchase</button><button onclick="open('production')">Production</button><button onclick="open('expenses')">Add Expense</button>
- </div><p class="muted">Every stock and money change is recorded as a database transaction.</p></div>`;
+async function logout(){await sb.auth.signOut();location.reload()}
+async function enterApp(){
+ document.getElementById("login").style.display="none";
+ document.getElementById("app").style.display="block";
+ const {data}=await sb.from("profiles").select("full_name,role").eq("id",currentUser.id).single();
+ document.getElementById("userText").textContent=(data?.full_name||currentUser.email)+" â€¢ "+(data?.role||"user");
+ showPage("dashboard");
 }
-async function simpleList(table,label,cols){
- const {data,error}=await q(table,{order:'created_at',limit:100});if(error)throw error;
- content.innerHTML=`<div class="panel"><div class="toolbar"><input id="search" placeholder="Search..." oninput="filterRows()"><button onclick="showForm('${table}')">+ Add</button></div><div class="tablewrap"><table class="table"><thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody id="rows">${(data||[]).map(r=>`<tr>${cols.map(c=>`<td>${esc(r[c])}</td>`).join('')}</tr>`).join('')}</tbody></table></div></div>`;
+function showPage(page){
+ currentPage=page;
+ document.querySelectorAll(".page").forEach(x=>x.classList.add("hidden"));
+ document.getElementById(page).classList.remove("hidden");
+ document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x.dataset.page===page));
+ document.getElementById("pageTitle").textContent=page[0].toUpperCase()+page.slice(1);
+ refreshCurrent();
 }
-function filterRows(){const s=(search.value||'').toLowerCase();document.querySelectorAll('#rows tr').forEach(r=>r.style.display=r.textContent.toLowerCase().includes(s)?'':'none')}
-async function inventory(){
- const {data,error}=await sb.from('v_inventory').select('*').order('name');if(error)throw error;
- content.innerHTML=`<div class="panel"><div class="tablewrap"><table class="table"><thead><tr><th>SKU</th><th>Product</th><th>Type</th><th>Unit</th><th>Stock</th></tr></thead><tbody>${(data||[]).map(r=>`<tr><td>${esc(r.sku)}</td><td>${esc(r.name)}</td><td>${esc(r.type)}</td><td>${esc(r.unit)}</td><td><b>${Number(r.stock||0).toLocaleString()}</b></td></tr>`).join('')}</tbody></table></div></div>`;
+async function refreshCurrent(){
+ if(currentPage==="dashboard") return loadDashboard();
+ const map={customers:loadCustomers,suppliers:loadSuppliers,products:loadProducts,inventory:loadInventory,production:loadProduction,sales:loadSales,deliveries:loadDeliveries,payments:loadPayments,expenses:loadExpenses,investors:loadInvestors,employees:loadEmployees,complaints:loadComplaints};
+ if(map[currentPage]) await map[currentPage]();
 }
-async function listSales(){return simpleList('sales','Sales',['invoice_no','customer_id','status','total','paid','balance','sale_date'])}
-async function listPurchases(){return simpleList('purchases','Purchases',['grn_no','supplier_id','status','total','paid','balance','purchase_date'])}
-async function production(){
- const {data,error}=await sb.from('products').select('id,sku,name,type').eq('type','finished').order('name');if(error)throw error;
- content.innerHTML=`<div class="panel"><h3>Complete Production</h3><p class="muted">Select a finished product and quantity. The active BOM is consumed automatically.</p>
- <div class="formgrid"><div class="field"><label>Product</label><select id="prod">${data.map(x=>`<option value="${x.id}">${esc(x.sku)} — ${esc(x.name)}</option>`).join('')}</select></div>
- <div class="field"><label>Quantity</label><input id="prodqty" type="number" min="1" value="100"></div>
- <div class="field"><label>Expiry</label><input id="expiry" type="date"></div></div><br><button onclick="doProduction()">Complete Production</button></div>
- <br><div class="panel"><h3>Recent Batches</h3><div id="batches"></div></div>`;
- const b=await sb.from('batches').select('*').order('manufactured_on',{ascending:false}).limit(30);
- batches.innerHTML='<div class="tablewrap"><table class="table"><tr><th>Batch</th><th>Product</th><th>Qty</th><th>Date</th><th>Status</th></tr>'+((b.data||[]).map(x=>`<tr><td>${x.batch_no}</td><td>${x.product_id}</td><td>${x.qty}</td><td>${x.manufactured_on}</td><td>${x.status}</td></tr>`).join(''))+'</table></div>';
+async function openForm(type){
+ const el=document.getElementById(type+"Form"); if(!el)return;
+ el.classList.remove("hidden");
+ const forms={
+ customer:`<div class="form-grid">
+  <div class="field"><label>Business name *</label><input id="f_business"></div>
+  <div class="field"><label>Contact person</label><input id="f_contact"></div>
+  <div class="field"><label>Phone</label><input id="f_phone"></div>
+  <div class="field"><label>Email</label><input id="f_email"></div>
+  <div class="field full"><label>Address</label><input id="f_address"></div>
+  <div class="field"><label>Type</label><select id="f_type"><option>Shop</option><option>Restaurant</option><option>Cafe</option><option>Distributor</option><option>Office</option><option>Hotel</option><option>Individual</option></select></div>
+ </div><div class="actions"><button onclick="saveCustomer()">Save</button><button class="secondary" onclick="closeForm('customer')">Cancel</button></div>`,
+ supplier:`<div class="form-grid"><div class="field"><label>Name *</label><input id="f_name"></div><div class="field"><label>Phone</label><input id="f_phone"></div><div class="field"><label>Email</label><input id="f_email"></div><div class="field"><label>Contact</label><input id="f_contact"></div><div class="field full"><label>Address</label><input id="f_address"></div></div><div class="actions"><button onclick="saveSupplier()">Save</button><button class="secondary" onclick="closeForm('supplier')">Cancel</button></div>`,
+ product:`<div class="form-grid"><div class="field"><label>Product name *</label><input id="f_name"></div><div class="field"><label>SKU</label><input id="f_sku" placeholder="Optional"></div><div class="field"><label>Bottle size</label><select id="f_size"><option>250ml</option><option>500ml</option><option>1.5L</option></select></div><div class="field"><label>Selling price</label><input id="f_price" type="number" step="0.01"></div><div class="field"><label>Wholesale price</label><input id="f_wholesale" type="number" step="0.01"></div><div class="field"><label>Minimum stock</label><input id="f_min" type="number" step="0.01"></div></div><div class="actions"><button onclick="saveProduct()">Save</button><button class="secondary" onclick="closeForm('product')">Cancel</button></div>`,
+ inventory:`<div class="form-grid"><div class="field"><label>Item name *</label><input id="f_name"></div><div class="field"><label>Category</label><select id="f_cat"><option>Bottles</option><option>Caps</option><option>Labels</option><option>Water</option><option>Packaging</option><option>Cleaning</option><option>Other</option></select></div><div class="field"><label>Unit</label><input id="f_unit" value="piece"></div><div class="field"><label>Quantity received *</label><input id="f_qty" type="number" step="0.001"></div><div class="field"><label>Unit cost</label><input id="f_cost" type="number" step="0.0001"></div><div class="field"><label>Location</label><input id="f_location" value="Main Warehouse"></div></div><div class="actions"><button onclick="saveInventory()">Receive Stock</button><button class="secondary" onclick="closeForm('inventory')">Cancel</button></div>`,
+ production:`<div class="form-grid"><div class="field"><label>Product ID</label><select id="f_product"></select></div><div class="field"><label>Quantity *</label><input id="f_qty" type="number" step="0.001"></div><div class="field"><label>Production date</label><input id="f_date" type="date" value="${today()}"></div><div class="field"><label>Direct cost</label><input id="f_direct" type="number" step="0.01"></div></div><div class="hint">Batch number is generated automatically. BOM/consumption can be completed from the database workflow.</div><div class="actions"><button onclick="saveProduction()">Save Batch</button><button class="secondary" onclick="closeForm('production')">Cancel</button></div>`,
+ sale:`<div class="form-grid"><div class="field"><label>Customer</label><select id="f_customer"></select></div><div class="field"><label>Date</label><input id="f_date" type="date" value="${today()}"></div><div class="field"><label>Subtotal</label><input id="f_subtotal" type="number" step="0.01"></div><div class="field"><label>Discount</label><input id="f_discount" type="number" step="0.01" value="0"></div><div class="field"><label>Tax</label><input id="f_tax" type="number" step="0.01" value="0"></div><div class="field"><label>Paid</label><input id="f_paid" type="number" step="0.01" value="0"></div></div><div class="actions"><button onclick="saveSale()">Create Order</button><button class="secondary" onclick="closeForm('sale')">Cancel</button></div>`,
+ delivery:`<div class="form-grid"><div class="field"><label>Order ID</label><select id="f_order"></select></div><div class="field"><label>Customer</label><select id="f_customer"></select></div><div class="field"><label>Date</label><input id="f_date" type="date" value="${today()}"></div><div class="field"><label>Status</label><select id="f_status"><option>Pending</option><option>Assigned</option><option>Out for Delivery</option><option>Delivered</option><option>Failed</option><option>Returned</option></select></div><div class="field"><label>Delivered qty</label><input id="f_delivered" type="number" step="0.001" value="0"></div><div class="field"><label>Cash collected</label><input id="f_cash" type="number" step="0.01" value="0"></div></div><div class="actions"><button onclick="saveDelivery()">Save Delivery</button><button class="secondary" onclick="closeForm('delivery')">Cancel</button></div>`,
+ payment:`<div class="form-grid"><div class="field"><label>Customer</label><select id="f_customer"></select></div><div class="field"><label>Amount *</label><input id="f_amount" type="number" step="0.01"></div><div class="field"><label>Date</label><input id="f_date" type="date" value="${today()}"></div><div class="field"><label>Method</label><select id="f_method"><option>Cash</option><option>Bank</option><option>Online</option><option>Cheque</option></select></div><div class="field"><label>Reference</label><input id="f_ref"></div></div><div class="actions"><button onclick="savePayment()">Save Payment</button><button class="secondary" onclick="closeForm('payment')">Cancel</button></div>`,
+ expense:`<div class="form-grid"><div class="field"><label>Category *</label><select id="f_cat"><option>Raw Materials</option><option>Bottles</option><option>Caps</option><option>Labels</option><option>Packaging</option><option>Water</option><option>Electricity</option><option>Fuel</option><option>Delivery</option><option>Salary</option><option>Rent</option><option>Marketing</option><option>Maintenance</option><option>Other</option></select></div><div class="field"><label>Amount *</label><input id="f_amount" type="number" step="0.01"></div><div class="field"><label>Date</label><input id="f_date" type="date" value="${today()}"></div><div class="field"><label>Vendor</label><input id="f_vendor"></div><div class="field full"><label>Description</label><input id="f_desc"></div></div><div class="actions"><button onclick="saveExpense()">Save Expense</button><button class="secondary" onclick="closeForm('expense')">Cancel</button></div>`,
+ investor:`<div class="form-grid"><div class="field"><label>Name *</label><input id="f_name"></div><div class="field"><label>Phone</label><input id="f_phone"></div><div class="field"><label>Investment amount</label><input id="f_amount" type="number" step="0.01"></div><div class="field"><label>Profit share %</label><input id="f_share" type="number" step="0.001"></div><div class="field"><label>Start date</label><input id="f_start" type="date"></div><div class="field"><label>End date</label><input id="f_end" type="date"></div></div><div class="actions"><button onclick="saveInvestor()">Save Investor</button><button class="secondary" onclick="closeForm('investor')">Cancel</button></div>`,
+ employee:`<div class="form-grid"><div class="field"><label>Name *</label><input id="f_name"></div><div class="field"><label>Phone</label><input id="f_phone"></div><div class="field"><label>Position</label><input id="f_position"></div><div class="field"><label>Department</label><input id="f_department"></div><div class="field"><label>Salary</label><input id="f_salary" type="number" step="0.01"></div><div class="field"><label>Joining date</label><input id="f_joining" type="date"></div></div><div class="actions"><button onclick="saveEmployee()">Save Employee</button><button class="secondary" onclick="closeForm('employee')">Cancel</button></div>`,
+ complaint:`<div class="form-grid"><div class="field"><label>Customer</label><select id="f_customer"></select></div><div class="field"><label>Type</label><select id="f_type"><option>Damaged Bottle</option><option>Leakage</option><option>Wrong Quantity</option><option>Wrong Product</option><option>Label Issue</option><option>Delivery Delay</option><option>Quality Issue</option><option>Payment Issue</option><option>Other</option></select></div><div class="field full"><label>Description</label><textarea id="f_desc"></textarea></div></div><div class="actions"><button onclick="saveComplaint()">Save Complaint</button><button class="secondary" onclick="closeForm('complaint')">Cancel</button></div>`
+ };
+ el.innerHTML=forms[type]||"";
+ if(["production"].includes(type)) await fillProducts("f_product");
+ if(["sale","payment","delivery","complaint"].includes(type)) await fillCustomers("f_customer");
+ if(type==="delivery") await fillOrders("f_order");
 }
-async function doProduction(){const {data,error}=await sb.rpc('complete_production',{p_product:prod.value,p_qty:Number(prodqty.value),p_expiry:expiry.value||null});if(error)toast(error.message);else{toast('Production completed: '+data);production()}}
-async function reports(){
- const {data:d,error}=await sb.from('v_dashboard').select('*').single();if(error)throw error;
- content.innerHTML=`<div class="grid"><div class="card"><div class="muted">Revenue</div><div class="stat">${money(d.revenue)}</div></div><div class="card"><div class="muted">COGS</div><div class="stat">${money(d.cogs)}</div></div><div class="card"><div class="muted">Gross Profit</div><div class="stat">${money(Number(d.revenue)-Number(d.cogs))}</div></div><div class="card"><div class="muted">Net Profit</div><div class="stat">${money(Number(d.revenue)-Number(d.cogs)-Number(d.expenses))}</div></div></div>
- <br><div class="panel"><h3>Financial rule</h3><p>Capital is not revenue. Profit is Revenue − COGS − operating expenses. Distributions are tracked separately.</p></div>`;
+function closeForm(type){document.getElementById(type+"Form").classList.add("hidden")}
+async function fillCustomers(id){const {data}=await sb.from("customers").select("id,business_name").eq("status","active").order("business_name");document.getElementById(id).innerHTML='<option value="">Select...</option>'+(data||[]).map(x=>`<option value="${x.id}">${esc(x.business_name)}</option>`).join("")}
+async function fillProducts(id){const {data}=await sb.from("products").select("id,name,bottle_size").eq("status","active").order("name");document.getElementById(id).innerHTML=(data||[]).map(x=>`<option value="${x.id}">${esc(x.name)} ${esc(x.bottle_size||"")}</option>`).join("")}
+async function fillOrders(id){const {data}=await sb.from("sales_orders").select("id,order_no,customer_id").neq("status","Cancelled").order("order_date",{ascending:false}).limit(100);document.getElementById(id).innerHTML='<option value="">Select...</option>'+(data||[]).map(x=>`<option value="${x.id}">Order #${x.order_no}</option>`).join("")}
+
+async function saveCustomer(){const {error}=await sb.from("customers").insert({business_name:f("f_business"),contact_person:f("f_contact"),phone:f("f_phone"),email:f("f_email"),address:f("f_address"),customer_type:f("f_type"),created_by:currentUser.id});if(error)return alert(error.message);closeForm("customer");loadCustomers()}
+async function saveSupplier(){const {error}=await sb.from("suppliers").insert({name:f("f_name"),contact_person:f("f_contact"),phone:f("f_phone"),email:f("f_email"),address:f("f_address"),created_by:currentUser.id});if(error)return alert(error.message);closeForm("supplier");loadSuppliers()}
+async function saveProduct(){const {error}=await sb.from("products").insert({name:f("f_name"),sku:f("f_sku")||null,bottle_size:f("f_size"),selling_price:num("f_price"),wholesale_price:num("f_wholesale"),minimum_stock:num("f_min")});if(error)return alert(error.message);closeForm("product");loadProducts()}
+async function saveInventory(){
+ const name=f("f_name"), qty=num("f_qty"); if(!name||qty<=0)return alert("Enter item and quantity.");
+ let {data:item,error}=await sb.from("inventory_items").select("id").eq("name",name).maybeSingle();
+ if(error)return alert(error.message);
+ if(!item){let r=await sb.from("inventory_items").insert({name,category:f("f_cat"),unit:f("f_unit"),location:f("f_location"),unit_cost:num("f_cost"),created_at:new Date().toISOString()}).select("id").single();if(r.error)return alert(r.error.message);item=r.data}
+ const {error:e}=await sb.from("stock_transactions").insert({item_id:item.id,tx_type:"purchase",quantity:qty,unit:f("f_unit"),location:f("f_location"),reason:"Stock received",unit_cost:num("f_cost"),created_by:currentUser.id});if(e)return alert(e.message);
+ closeForm("inventory");loadInventory();
 }
-async function settings(){
- const {data}=await sb.from('company_settings').select('*').single();
- content.innerHTML=`<div class="panel"><h3>Company Setup</h3><div class="formgrid"><div class="field"><label>Company</label><input id="company" value="${esc(data?.company_name||'CLEARON')}"></div><div class="field"><label>Owner</label><input id="owner" value="${esc(data?.owner_name||'Faizan')}"></div><div class="field"><label>Owner %</label><input id="opct" type="number" value="${data?.owner_pct??55}"></div><div class="field"><label>Partner %</label><input id="ppct" type="number" value="${data?.partner_pct??30}"></div><div class="field"><label>Investor %</label><input id="ipct" type="number" value="${data?.investor_pct??15}"></div><div class="field"><label>Reserve %</label><input id="rpct" type="number" value="${data?.reserve_pct??10}"></div></div><br><button onclick="saveSettings()">Save Settings</button></div>
- <br><div class="panel"><h3>Supabase connection</h3><p class="muted">This page uses only the Supabase URL + anon/publishable key. Never put a service-role key in this HTML.</p></div>`;
-}
-async function saveSettings(){
- const a=Number(opct.value),b=Number(ppct.value),c=Number(ipct.value);if(a+b+c!==100)return toast('Owner + Partner + Investor must equal 100%');
- const {error}=await sb.from('company_settings').update({company_name:company.value,owner_name:owner.value,owner_pct:a,partner_pct:b,investor_pct:c,reserve_pct:Number(rpct.value),updated_at:new Date().toISOString()}).not('id','is',null);
- toast(error?error.message:'Settings saved');if(!error)open('dashboard');
-}
-async function showForm(table){
- if(table==='customers')return miniForm('Customer','customers',[['name','Name'],['phone','Phone'],['address','Address'],['credit_limit','Credit Limit','number']]);
- if(table==='suppliers')return miniForm('Supplier','suppliers',[['name','Name'],['phone','Phone'],['address','Address']]);
- if(table==='employees')return miniForm('Employee','employees',[['name','Name'],['phone','Phone'],['designation','Designation'],['monthly_salary','Monthly Salary','number']]);
- if(table==='expenses')return miniForm('Expense','expenses',[['description','Description'],['amount','Amount','number']]);
- toast('Use the dedicated transaction buttons for financial records.');
-}
-function miniForm(label,table,fields){
- content.innerHTML=`<div class="panel"><h3>Add ${label}</h3><div class="formgrid">${fields.map(f=>`<div class="field"><label>${f[1]}</label><input id="f_${f[0]}" type="${f[2]||'text'}"></div>`).join('')}</div><br><button onclick="saveMini('${table}',${JSON.stringify(fields)})">Save</button> <button class="secondary" onclick="open('${table==='customers'?'customers':table==='employees'?'people':'expenses'}')">Cancel</button></div>`;
-}
-async function saveMini(table,fields){
- const o={};fields.forEach(f=>o[f[0]]=document.getElementById('f_'+f[0]).value);if(table==='expenses'){toast('Expenses must use the transaction RPC with an account.');return}
- const {error}=await sb.from(table).insert(o);toast(error?error.message:'Saved');if(!error)open(table==='customers'?'customers':table==='employees'?'people':'expenses')
-}
-init();
+async function saveProduction(){const {error}=await sb.from("production_batches").insert({product_id:f("f_product"),quantity:num("f_qty"),production_date:f("f_date"),direct_cost:num("f_direct"),created_by:currentUser.id});if(error)return alert(error.message);closeForm("production");loadProduction()}
+async function saveSale(){const {error}=await sb.from("sales_orders").insert({customer_id:f("f_customer"),order_date:f("f_date"),subtotal:num("f_subtotal"),discount:num("f_discount"),tax:num("f_tax"),paid:num("f_paid"),created_by:currentUser.id});if(error)return alert(error.message);closeForm("sale");loadSales()}
+async function saveDelivery(){const {error}=await sb.from("deliveries").insert({order_id:f("f_order")||null,customer_id:f("f_customer")||null,delivery_date:f("f_date"),status:f("f_status"),delivered_quantity:num("f_delivered"),cash_collected:num("f_cash"),created_by:currentUser.id});if(error)return alert(error.message);closeForm("delivery");loadDeliveries()}
+async function savePayment(){const {error}=await sb.from("payments").insert({customer_id:f("f_customer")||null,amount:num("f_amount"),payment_date:f("f_date"),method:f("f_method"),reference:f("f_ref"),created_by:currentUser.id});if(error)return alert(error.message);closeForm("payment");loadPayments()}
+async function saveExpense(){const {error}=await sb.from("expenses").insert({category:f("f_cat"),amount:num("f_amount"),expense_date:f("f_date"),vendor:f("f_vendor"),description:f("f_desc"),created_by:currentUser.id});if(error)return alert(error.message);closeForm("expense");loadExpenses()}
+async function saveInvestor(){const {error}=await sb.from("investors").insert({name:f("f_name"),phone:f("f_phone"),investment_amount:num("f_amount"),profit_share:num("f_share"),agreement_start:f("f_start")||null,agreement_end:f("f_end")||null});if(error)return alert(error.message);closeForm("investor");loadInvestors()}
+async function saveEmployee(){const {error}=await sb.from("employees").insert({name:f("f_name"),phone:f("f_phone"),position:f("f_position"),department:f("f_department"),salary:num("f_salary"),joining_date:f("f_joining")||null});if(error)return alert(error.message);closeForm("employee");loadEmployees()}
+async function saveComplaint(){const {error}=await sb.from("complaints").insert({customer_id:f("f_customer")||null,complaint_type:f("f_type"),description:f("f_desc"),created_by:currentUser.id});if(error)return alert(error.message);closeForm("complaint");loadComplaints()}
+const f=id=>document.getElementById(id)?.value?.trim()||"";
+const num=id=>Number(document.getElementById(id)?.value||0);
+
+async function loadDashboard(){const {data,error}=await sb.from("dashboard_summary").select("*").single();if(error)return;document.getElementById("mCustomers").textContent=data.customers;document.getElementById("mProducts").textContent=data.products;document.getElementById("mSales").textContent=money(data.sales_today);document.getElementById("mExpenses").textContent=money(data.expenses_today)}
+async function list(table,select,target,cols,limit=100){const {data,error}=await sb.from(table).select(select).order("created_at",{ascending:false}).limit(limit);if(error){document.getElementById(target).innerHTML=`<div class="msg">${esc(error.message)}</div>`;return}document.getElementById(target).innerHTML=`<table><thead><tr>${cols.map(c=>`<th>${c.label}</th>`).join("")}</tr></thead><tbody>${(data||[]).map(x=>`<tr>${cols.map(c=>`<td>${c.render?c.render(x):esc(x[c.key])}</td>`).join("")}</tr>`).join("")}</tbody></table>`}
+async function loadCustomers(){await list("customers","customer_no,business_name,contact_person,phone,customer_type,status,created_at","customerTable",[{label:"#",key:"customer_no"},{label:"Business",key:"business_name"},{label:"Contact",key:"contact_person"},{label:"Phone",key:"phone"},{label:"Type",key:"customer_type"},{label:"Status",key:"status"}])}
+async function loadSuppliers(){await list("suppliers","supplier_no,name,contact_person,phone,status,created_at","supplierTable",[{label:"#",key:"supplier_no"},{label:"Supplier",key:"name"},{label:"Contact",key:"contact_person"},{label:"Phone",key:"phone"},{label:"Status",key:"status"}])}
+async function loadProducts(){await list("products","product_no,name,sku,bottle_size,selling_price,wholesale_price,status,created_at","productTable",[{label:"#",key:"product_no"},{label:"Product",key:"name"},{label:"SKU",key:"sku"},{label:"Size",key:"bottle_size"},{label:"Retail",key:"selling_price",render:x=>money(x.selling_price)},{label:"Wholesale",key:"wholesale_price",render:x=>money(x.wholesale_price)}])}
+async function loadInventory(){const {data,error}=await sb.from("inventory_items").select("id,item_no,name,category,unit,location,minimum_stock,unit_cost,created_at").order("created_at",{ascending:false});if(error)return err("inventoryTable",error);let rows=[];for(const x of data||[]){const b=await sb.rpc("inventory_balance",{p_item:x.id});rows.push({...x,balance:b.data||0})}document.getElementById("inventoryTable").innerHTML=`<table><thead><tr><th>#</th><th>Item</th><th>Category</th><th>Location</th><th>Available</th><th>Unit Cost</th></tr></thead><tbody>${rows.map(x=>`<tr><td>${x.item_no}</td><td>${esc(x.name)}</td><td>${esc(x.category)}</td><td>${esc(x.location)}</td><td>${Number(x.balance).toLocaleString()}</td><td>${money(x.unit_cost)}</td></tr>`).join("")}</tbody></table>`}
+async function loadProduction(){await list("production_batches","batch_no,production_date,product_id,quantity,quality_status,completed,created_at","productionTable",[{label:"Batch",key:"batch_no"},{label:"Date",key:"production_date"},{label:"Quantity",key:"quantity"},{label:"QC",key:"quality_status"},{label:"Completed",key:"completed",render:x=>x.completed?'<span class="badge">Yes</span>':'No'}])}
+async function loadSales(){await list("sales_orders","order_no,order_date,customer_id,total,paid,outstanding,status,created_at","saleTable",[{label:"Order",key:"order_no"},{label:"Date",key:"order_date"},{label:"Total",key:"total",render:x=>money(x.total)},{label:"Paid",key:"paid",render:x=>money(x.paid)},{label:"Outstanding",key:"outstanding",render:x=>money(x.outstanding)},{label:"Status",key:"status"}])}
+async function loadDeliveries(){await list("deliveries","delivery_no,delivery_date,customer_id,status,delivered_quantity,cash_collected,created_at","deliveryTable",[{label:"Delivery",key:"delivery_no"},{label:"Date",key:"delivery_date"},{label:"Status",key:"status"},{label:"Delivered",key:"delivered_quantity"},{label:"Cash",key:"cash_collected",render:x=>money(x.cash_collected)}])}
+async function loadPayments(){await list("payments","payment_no,payment_date,customer_id,amount,method,reference,created_at","paymentTable",[{label:"#",key:"payment_no"},{label:"Date",key:"payment_date"},{label:"Amount",key:"amount",render:x=>money(x.amount)},{label:"Method",key:"method"},{label:"Reference",key:"reference"}])}
+async function loadExpenses(){await list("expenses","expense_no,expense_date,category,vendor,amount,description,created_at","expenseTable",[{label:"#",key:"expense_no"},{label:"Date",key:"expense_date"},{label:"Category",key:"category"},{label:"Amount",key:"amount",render:x=>money(x.amount)},{label:"Vendor",key:"vendor"}])}
+async function loadInvestors(){await list("investors","investor_no,name,phone,investment_amount,profit_share,status,created_at","investorTable",[{label:"#",key:"investor_no"},{label:"Investor",key:"name"},{label:"Phone",key:"phone"},{label:"Capital",key:"investment_amount",render:x=>money(x.investment_amount)},{label:"Share",key:"profit_share",render:x=>x.profit_share+"%"}])}
+async function loadEmployees(){await list("employees","employee_no,name,phone,position,department,salary,status,created_at","employeeTable",[{label:"#",key:"employee_no"},{label:"Name",key:"name"},{label:"Position",key:"position"},{label:"Department",key:"department"},{label:"Salary",key:"salary",render:x=>money(x.salary)},{label:"Status",key:"status"}])}
+async function loadComplaints(){await list("complaints","complaint_no,complaint_date,customer_id,complaint_type,description,status,created_at","complaintTable",[{label:"#",key:"complaint_no"},{label:"Date",key:"complaint_date"},{label:"Type",key:"complaint_type"},{label:"Description",key:"description"},{label:"Status",key:"status"}])}
+function err(id,e){document.getElementById(id).innerHTML=`<div class="msg">${esc(e.message)}</div>`}
+
+sb.auth.getSession().then(({data})=>{if(data.session){currentUser=data.session.user;enterApp()}});
 </script>
 </body>
 </html>
