@@ -37,7 +37,7 @@ table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:11px 8px
   <button style="width:100%" onclick="login()">Login</button>
   <button class="secondary" style="width:100%;margin-top:8px" onclick="resetPassword()">Forgot password?</button>
   <div id="loginMsg" class="msg"></div>
-  <p class="hint">Supabase URL and anon key are configured below in the source.</p>
+  <p class="hint">First setup: replace the two Supabase values in the source code. If you haven't, clicking Login will show the setup message instead of doing nothing.</p>
  </div>
 </section>
 
@@ -102,9 +102,32 @@ table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:11px 8px
 /* =========================================================
    1) PUT YOUR SUPABASE PROJECT VALUES HERE
    ========================================================= */
-const SUPABASE_URL = "YOUR_SUPABASE_URL";
-const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const SUPABASE_URL = "https://qukhipqesopvkxhpyvyw.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_uQIngCv-hnLr0OaaTFNDJg_r8FADdtw";
+let sb = null;
+let supabaseReady = false;
+
+function initSupabase(){
+  const validUrl = /^https:\/\/[^\s]+\.supabase\.co(?:\/.*)?$/.test(SUPABASE_URL);
+  const validKey = SUPABASE_ANON_KEY && !SUPABASE_ANON_KEY.startsWith("YOUR_");
+  if(validUrl && validKey && window.supabase){
+    try{
+      sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      supabaseReady = true;
+    }catch(e){
+      console.error("Supabase initialization failed:", e);
+    }
+  }
+}
+
+function requireSupabase(){
+  if(!supabaseReady){
+    document.getElementById("loginMsg").textContent =
+      "Supabase setup missing. Open this file and replace YOUR_SUPABASE_URL and YOUR_SUPABASE_ANON_KEY.";
+    return false;
+  }
+  return true;
+}
 let currentPage="dashboard";
 let currentUser=null;
 
@@ -124,7 +147,10 @@ async function resetPassword(){
  const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.href});
  document.getElementById("loginMsg").textContent=error?error.message:"Password reset email sent.";
 }
-async function logout(){await sb.auth.signOut();location.reload()}
+async function logout(){
+  if(supabaseReady) await sb.auth.signOut();
+  location.reload();
+}
 async function enterApp(){
  document.getElementById("login").style.display="none";
  document.getElementById("app").style.display="block";
@@ -217,7 +243,12 @@ async function loadEmployees(){await list("employees","employee_no,name,phone,po
 async function loadComplaints(){await list("complaints","complaint_no,complaint_date,customer_id,complaint_type,description,status,created_at","complaintTable",[{label:"#",key:"complaint_no"},{label:"Date",key:"complaint_date"},{label:"Type",key:"complaint_type"},{label:"Description",key:"description"},{label:"Status",key:"status"}])}
 function err(id,e){document.getElementById(id).innerHTML=`<div class="msg">${esc(e.message)}</div>`}
 
-sb.auth.getSession().then(({data})=>{if(data.session){currentUser=data.session.user;enterApp()}});
+initSupabase();
+if(supabaseReady){
+  sb.auth.getSession().then(({data})=>{
+    if(data.session){currentUser=data.session.user;enterApp();}
+  }).catch(e=>console.error(e));
+}
 </script>
 </body>
 </html>
