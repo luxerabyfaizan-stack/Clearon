@@ -78,10 +78,14 @@ function renderNav(){nav.innerHTML=modules.map(x=>`<button class="${x[0]===curre
 async function load(m){
  current=m;title.textContent=modules.find(x=>x[0]===m)?.[1]||m;renderNav();setContent('<div class="panel">Loading...</div>');
  try{await ({dashboard,sales,purchases,inventory,production,recipes,deliveries,customers,suppliers,products,expenses,cash,capital,employees,reports,settings}[m])();sidebar.classList.remove('open')}
- catch(e){setContent(`<div class="panel"><b>Error:</b> ${esc(e.message)}</div>`)}
+ catch(e){console.error(e);setContent(`<div class="panel"><b>Could not load this section.</b><p class="muted">${esc(e.message)}</p><button class="primary" onclick="load(current)">Try Again</button></div>`)}
 }
-async function q(table,cols='*',order='created_at'){
- let r=await sb.from(table).select(cols).order(order,{ascending:false}).limit(1000);if(r.error)throw r.error;return r.data||[]
+async function q(table,cols='*',order=null){
+ let query=sb.from(table).select(cols);
+ if(order)query=query.order(order,{ascending:false});
+ let r=await query.limit(1000);
+ if(r.error)throw r.error;
+ return r.data||[]
 }
 async function rpc(fn,args){let r=await sb.rpc(fn,args);if(r.error)throw r.error;return r.data}
 function table(rows,cols){
