@@ -3,1982 +3,380 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CLEARON ERP - Business Management</title>
+<title>CLEARON - Simple Business ERP</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f5f7fb;color:#172033}
-button,input,select,textarea{font:inherit}
-button{cursor:pointer;border:0}
-.hidden{display:none!important}
-
-#login{
- min-height:100vh;display:grid;place-items:center;
- background:linear-gradient(135deg,#07111f,#12375b)
-}
-.login-card{
- width:min(430px,92vw);background:white;border-radius:20px;
- padding:28px;box-shadow:0 25px 80px #0005
-}
-.brand{font-size:30px;font-weight:900;letter-spacing:2px}
-.muted{color:#718096}
-.field{margin:12px 0}
-.field label{
- display:block;font-size:12px;font-weight:bold;margin-bottom:6px
-}
-.field input,.field select,.field textarea{
- width:100%;padding:11px 12px;border:1px solid #d9e0ea;
- border-radius:10px;background:white
-}
-.primary{
- background:#1167d8;color:white;padding:11px 16px;
- border-radius:10px;font-weight:bold
-}
-.success{
- background:#159447;color:white;padding:9px 13px;border-radius:9px
-}
-.ghost{
- background:#edf2f7;color:#27364a;padding:9px 13px;border-radius:9px
-}
-
-#app{display:none;min-height:100vh}
-
-.sidebar{
- position:fixed;left:0;top:0;bottom:0;width:245px;
- background:#0c1726;color:#c9d5e5;padding:18px;overflow:auto
-}
-.sidebrand{
- color:white;font-size:23px;font-weight:900;
- letter-spacing:2px;margin:4px 8px 22px
-}
-.nav button{
- display:block;width:100%;text-align:left;background:transparent;
- color:#bdc9d9;padding:10px 12px;border-radius:9px;margin:3px 0
-}
-.nav button:hover,.nav button.active{
- background:#1a2d46;color:white
-}
-
-.main{margin-left:245px;padding:24px}
-
-.top{
- display:flex;align-items:center;justify-content:space-between;
- gap:12px;margin-bottom:22px
-}
-.top h1{margin:0;font-size:27px}
-
-.cards{
- display:grid;grid-template-columns:repeat(4,1fr);gap:14px
-}
-.card{
- background:white;border:1px solid #e5eaf0;border-radius:14px;
- padding:18px;box-shadow:0 3px 15px #13223808
-}
-.metric{font-size:26px;font-weight:900;margin-top:8px}
-
-.grid{
- display:grid;grid-template-columns:1fr 1fr;gap:16px
-}
-.panel{
- background:white;border:1px solid #e5eaf0;border-radius:14px;
- padding:18px;margin-bottom:16px
-}
-.panel h3{margin:0 0 14px}
-
-.toolbar{
- display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px
-}
-
-.table-wrap{overflow:auto}
-table{width:100%;border-collapse:collapse;min-width:650px}
-th,td{
- padding:10px;border-bottom:1px solid #edf0f4;
- text-align:left;font-size:13px
-}
-th{background:#f7f9fc;font-size:12px}
-
-.badge{
- display:inline-block;padding:4px 8px;border-radius:20px;
- background:#eaf1fb;font-size:11px;font-weight:bold
-}
-
-.modal{
- position:fixed;inset:0;background:#07111f99;
- display:grid;place-items:center;padding:16px;z-index:20
-}
-.modalbox{
- background:white;width:min(720px,96vw);max-height:92vh;
- overflow:auto;border-radius:16px;padding:20px
-}
-.formgrid{
- display:grid;grid-template-columns:1fr 1fr;gap:10px
-}
-.formgrid .full{grid-column:1/-1}
-
-.toast{
- position:fixed;right:18px;bottom:18px;background:#172033;
- color:white;padding:12px 16px;border-radius:10px;
- z-index:50;display:none;max-width:420px
-}
-.small{font-size:12px}
-.right{text-align:right}
-.errorbox{
- background:#fff4f4;border:1px solid #f0b5b5;
- color:#9b2226;padding:12px;border-radius:10px
-}
-
-.hamb{
- display:none;background:#0c1726;color:white;
- padding:9px;border-radius:8px
-}
-
-@media(max-width:900px){
- .sidebar{transform:translateX(-100%);transition:.2s;z-index:30}
- .sidebar.open{transform:none}
- .main{margin-left:0;padding:16px}
- .hamb{display:block}
- .cards{grid-template-columns:1fr 1fr}
- .grid{grid-template-columns:1fr}
-}
-
-@media(max-width:550px){
- .cards{grid-template-columns:1fr}
- .formgrid{grid-template-columns:1fr}
- .formgrid .full{grid-column:auto}
- .top h1{font-size:22px}
-}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:#f4f7fb;color:#172033}button,input,select,textarea{font:inherit}button{cursor:pointer;border:0}.hidden{display:none!important}
+#login{min-height:100vh;display:grid;place-items:center;background:linear-gradient(135deg,#07111f,#174a78)}.loginbox{width:min(440px,94vw);background:#fff;padding:28px;border-radius:18px;box-shadow:0 20px 70px #0005}.brand{font-size:30px;font-weight:900;letter-spacing:2px}.muted{color:#718096}.small{font-size:12px}.field{margin:10px 0}.field label{display:block;font-size:12px;font-weight:700;margin-bottom:5px}.field input,.field select,.field textarea{width:100%;padding:11px;border:1px solid #d9e0ea;border-radius:9px;background:#fff}.primary{background:#1167d8;color:#fff;padding:10px 14px;border-radius:9px;font-weight:700}.success{background:#159447;color:#fff;padding:9px 12px;border-radius:8px}.danger{background:#d9363e;color:#fff;padding:9px 12px;border-radius:8px}.ghost{background:#eaf0f6;color:#26364a;padding:9px 12px;border-radius:8px}.linkbtn{background:none;color:#1167d8;padding:0}
+#app{display:none}.sidebar{position:fixed;left:0;top:0;bottom:0;width:230px;background:#0b1726;color:#d5dfeb;padding:16px;overflow:auto}.sidebrand{font-size:23px;font-weight:900;color:#fff;letter-spacing:2px;margin:5px 8px 20px}.nav button{display:block;width:100%;background:transparent;color:#c3cfdd;text-align:left;padding:9px 11px;border-radius:8px;margin:2px 0}.nav button:hover,.nav button.active{background:#19304b;color:#fff}.main{margin-left:230px;padding:22px}.top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:18px}.top h1{margin:0;font-size:25px}.hamb{display:none;background:#0b1726;color:#fff;padding:9px;border-radius:8px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.card,.panel{background:#fff;border:1px solid #e4e9ef;border-radius:13px;padding:16px;box-shadow:0 2px 12px #1422380a}.metric{font-size:23px;font-weight:900;margin-top:6px}.kpi-note{font-size:11px;color:#718096;margin-top:4px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.three{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:13px}.search{max-width:260px}.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:680px}th,td{padding:9px 10px;border-bottom:1px solid #edf0f4;text-align:left;font-size:13px}th{background:#f7f9fc;font-size:11px}.badge{display:inline-block;padding:4px 8px;border-radius:20px;background:#edf3fa;font-size:11px;font-weight:700}.good{background:#e7f6ed;color:#126c39}.warn{background:#fff4dc;color:#8a5a00}.bad{background:#fde9e9;color:#a51d24}.modal{position:fixed;inset:0;background:#07111f99;display:grid;place-items:center;padding:14px;z-index:20}.modalbox{background:#fff;width:min(820px,96vw);max-height:94vh;overflow:auto;border-radius:15px;padding:18px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.full{grid-column:1/-1}.right{text-align:right}.toast{position:fixed;right:18px;bottom:18px;background:#172033;color:#fff;padding:12px 15px;border-radius:9px;display:none;z-index:50}.notice{padding:11px;background:#fff7df;border:1px solid #efd998;border-radius:9px;font-size:12px;margin-bottom:12px}.hero{font-size:14px;font-weight:800}.moneybig{font-size:28px;font-weight:900}.statline{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #edf0f4}.empty{text-align:center;padding:30px;color:#718096}
+@media(max-width:900px){.sidebar{transform:translateX(-100%);transition:.2s;z-index:30}.sidebar.open{transform:none}.main{margin-left:0;padding:15px}.hamb{display:block}.cards{grid-template-columns:1fr 1fr}.grid,.three{grid-template-columns:1fr}.formgrid{grid-template-columns:1fr}.full{grid-column:auto}}
+@media(max-width:520px){.cards{grid-template-columns:1fr}.top h1{font-size:20px}}
 </style>
 </head>
-
 <body>
-
 <section id="login">
-<div class="login-card">
-
+<div class="loginbox">
 <div class="brand">CLEARON</div>
-<div class="muted" style="margin:5px 0 20px">
-Drinking Water ERP
-</div>
-
-<div class="field">
-<label>Supabase Project URL</label>
-<input id="sburl" placeholder="https://xxxx.supabase.co">
-</div>
-
-<div class="field">
-<label>Publishable / Anon Key</label>
-<input id="sbkey" type="password">
-</div>
-
-<div class="field">
-<label>Email</label>
-<input id="email" type="email" autocomplete="username">
-</div>
-
-<div class="field">
-<label>Password</label>
-<input id="password" type="password" autocomplete="current-password">
-</div>
-
-<button class="primary" style="width:100%" onclick="login()">
-Sign In
-</button>
-
-<p class="small muted">
-Use your Supabase Authentication email and password.
-</p>
-
+<div class="muted" style="margin:5px 0 20px">Simple Drinking Water Business System</div>
+<div class="field"><label>Supabase Project URL</label><input id="sburl" placeholder="https://xxxx.supabase.co"></div>
+<div class="field"><label>Publishable / Anon Key</label><input id="sbkey" type="password" placeholder="eyJ..."></div>
+<div class="field"><label>Email</label><input id="email" type="email"></div>
+<div class="field"><label>Password</label><input id="password" type="password"></div>
+<button class="primary" style="width:100%" onclick="login()">Sign in</button>
+<p class="small muted">Run the CLEARON SQL once in Supabase, then create an Auth user.</p>
 </div>
 </section>
-
 
 <section id="app">
-
 <aside class="sidebar" id="sidebar">
-
 <div class="sidebrand">CLEARON</div>
-
 <div class="nav" id="nav"></div>
-
-<button class="ghost" style="width:100%;margin-top:14px"
-onclick="logout()">
-Logout
-</button>
-
+<button class="ghost" style="width:100%;margin-top:12px" onclick="logout()">Logout</button>
 </aside>
-
-
 <main class="main">
-
-<div class="top">
-
-<div style="display:flex;gap:10px;align-items:center">
-
-<button class="hamb" onclick="toggleSide()">
-Menu
-</button>
-
-<h1 id="title">Dashboard</h1>
-
-</div>
-
-<div id="userbox" class="small muted"></div>
-
-</div>
-
+<div class="top"><div style="display:flex;align-items:center;gap:9px"><button class="hamb" onclick="toggleSide()">Menu</button><h1 id="title">Dashboard</h1></div><div id="userbox" class="small muted"></div></div>
 <div id="content"></div>
-
 </main>
-
 </section>
 
-
-<div class="modal hidden" id="modal">
-
-<div class="modalbox">
-
-<div class="top">
-
-<h3 id="modalTitle">Form</h3>
-
-<button class="ghost" onclick="closeModal()">
-Close
-</button>
-
-</div>
-
-<div id="modalBody"></div>
-
-</div>
-
-</div>
-
-
-<div id="toast" class="toast"></div>
-
+<div class="modal hidden" id="modal"><div class="modalbox"><div class="top"><h3 id="modalTitle">Form</h3><button class="ghost" onclick="closeModal()">Close</button></div><div id="modalBody"></div></div></div>
+<div class="toast" id="toast"></div>
 
 <script>
-
-let db=null;
-let profile=null;
-let current='dashboard';
-
-
+let sb=null,profile=null,current='dashboard',cache={};
 const modules=[
-['dashboard','Dashboard'],
-['customers','Customers'],
-['suppliers','Suppliers'],
-['products','Products'],
-['locations','Warehouses'],
-['inventory','Inventory'],
-['purchases','Purchases'],
-['sales','Sales'],
-['production','Production'],
-['qc','QC / Batches'],
-['deliveries','Deliveries'],
-['expenses','Expenses'],
-['cash','Cash / Bank'],
-['capital','Capital / Investors'],
-['employees','Employees'],
-['reports','Reports'],
-['settings','Settings']
+['dashboard','Dashboard'],['sales','Sales'],['purchases','Purchases'],['inventory','Inventory'],['production','Production'],['recipes','Production Recipe'],
+['deliveries','Deliveries'],['customers','Customers'],['suppliers','Suppliers'],['products','Products'],['expenses','Expenses'],
+['cash','Cash & Bank'],['capital','Investment & Funds'],['employees','Employees'],['reports','Profit & Reports'],['settings','Settings']
 ];
-
-
-const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({
-'&':'&amp;',
-'<':'&lt;',
-'>':'&gt;',
-'"':'&quot;',
-"'":'&#39;'
-}[m]));
-
-
-const money=n=>'PKR '+Number(n||0).toLocaleString('en-PK',{
-minimumFractionDigits:2,
-maximumFractionDigits:2
-});
-
-
-function toast(s){
-
-let x=document.getElementById('toast');
-
-x.textContent=s;
-x.style.display='block';
-
-setTimeout(()=>{
-x.style.display='none'
-},3200);
-
-}
-
-
-function toggleSide(){
-
-document.getElementById('sidebar')
-.classList.toggle('open');
-
-}
-
-
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const money=n=>'PKR '+Number(n||0).toLocaleString('en-PK',{minimumFractionDigits:2,maximumFractionDigits:2});
+const today=()=>new Date().toISOString().slice(0,10);
+function toast(s){let x=document.getElementById('toast');x.textContent=s;x.style.display='block';clearTimeout(window.tt);window.tt=setTimeout(()=>x.style.display='none',3200)}
+function toggleSide(){document.getElementById('sidebar').classList.toggle('open')}
+function setContent(x){document.getElementById('content').innerHTML=x}
 async function login(){
-
-try{
-
-const url=document.getElementById('sburl')
-.value.trim().replace(/\/+$/,'');
-
-const key=document.getElementById('sbkey')
-.value.trim();
-
-const email=document.getElementById('email')
-.value.trim();
-
-const password=document.getElementById('password').value;
-
-
-if(!url)
-throw Error('Enter Supabase Project URL.');
-
-if(!/^https:\/\/[A-Za-z0-9-]+\.supabase\.co$/.test(url))
-throw Error(
-'Invalid Supabase URL. Use https://YOUR-PROJECT.supabase.co'
-);
-
-if(!key)
-throw Error('Enter Publishable / Anon Key.');
-
-if(!email||!password)
-throw Error('Enter email and password.');
-
-
-localStorage.setItem(
-'clearon.cfg',
-JSON.stringify({url,key})
-);
-
-
-db=supabase.createClient(url,key,{
-auth:{
-persistSession:true,
-autoRefreshToken:true,
-detectSessionInUrl:true
+ try{
+  const url=sburl.value.trim(),key=sbkey.value.trim();
+  if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(url))throw Error('Use the Supabase Project URL only, for example https://xxxx.supabase.co');
+  localStorage.setItem('clearon.cfg',JSON.stringify({url,key}));
+  sb=supabase.createClient(url,key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+  const {data,error}=await sb.auth.signInWithPassword({email:email.value.trim(),password:password.value});
+  if(error)throw error; await start(data.user);
+ }catch(e){toast(e.message)}
 }
-});
-
-
-const {data,error}=
-await db.auth.signInWithPassword({
-email,
-password
-});
-
-
-if(error)throw error;
-
-await start(data.user);
-
-
-}catch(e){
-
-toast(e.message||String(e));
-
-}
-
-}
-
-
-async function restoreSession(){
-
-try{
-
-let c=localStorage.getItem('clearon.cfg');
-
-if(!c)return;
-
-let x=JSON.parse(c);
-
-document.getElementById('sburl').value=x.url||'';
-document.getElementById('sbkey').value=x.key||'';
-
-
-if(x.url&&x.key){
-
-db=supabase.createClient(x.url,x.key,{
-auth:{
-persistSession:true,
-autoRefreshToken:true,
-detectSessionInUrl:true
-}
-});
-
-
-const {data}=await db.auth.getSession();
-
-
-if(data&&data.session){
-
-await start(data.session.user);
-
-}
-
-}
-
-}catch(e){
-
-console.log(e.message);
-
-}
-
-}
-
-
 async function start(user){
-
-const r=await db
-.from('profiles')
-.select('*')
-.eq('id',user.id)
-.single();
-
-
-if(r.error)throw r.error;
-
-profile=r.data;
-
-
-document.getElementById('login').style.display='none';
-document.getElementById('app').style.display='block';
-
-
-document.getElementById('userbox').textContent=
-(profile.full_name||user.email)+' | '+profile.role;
-
-
-renderNav();
-
-await load(current);
-
+ const r=await sb.from('profiles').select('*').eq('id',user.id).single();
+ if(r.error)throw r.error;profile=r.data;
+ loginSec(false);userbox.textContent=(profile.full_name||user.email)+' - '+profile.role;
+ renderNav();await load(current);
 }
-
-
-async function logout(){
-
-if(db)await db.auth.signOut();
-
-location.reload();
-
-}
-
-
-function renderNav(){
-
-document.getElementById('nav').innerHTML=
-modules.map(x=>
-`<button class="${
-x[0]===current?'active':''
-}" onclick="load('${x[0]}')">
-${x[1]}
-</button>`
-).join('');
-
-}
-
-
+function loginSec(show){document.getElementById('login').style.display=show?'grid':'none';document.getElementById('app').style.display=show?'none':'block'}
+async function logout(){if(sb)await sb.auth.signOut();location.reload()}
+function renderNav(){nav.innerHTML=modules.map(x=>`<button class="${x[0]===current?'active':''}" onclick="load('${x[0]}')">${x[1]}</button>`).join('')}
 async function load(m){
-
-current=m;
-
-document.getElementById('title').textContent=
-modules.find(x=>x[0]===m)?.[1]||m;
-
-renderNav();
-
-document.getElementById('content').innerHTML=
-'<div class="panel">Loading...</div>';
-
-
-try{
-
-const fn={
-dashboard,
-customers,
-suppliers,
-products,
-locations,
-inventory,
-purchases,
-sales,
-production,
-qc,
-deliveries,
-expenses,
-cash,
-capital,
-employees,
-reports,
-settings
-}[m];
-
-
-if(!fn)throw Error('Module not found.');
-
-await fn();
-
-
-}catch(e){
-
-document.getElementById('content').innerHTML=
-`<div class="panel errorbox">
-<b>Error:</b> ${esc(e.message)}
-</div>`;
-
+ current=m;title.textContent=modules.find(x=>x[0]===m)?.[1]||m;renderNav();setContent('<div class="panel">Loading...</div>');
+ try{await ({dashboard,sales,purchases,inventory,production,recipes,deliveries,customers,suppliers,products,expenses,cash,capital,employees,reports,settings}[m])();sidebar.classList.remove('open')}
+ catch(e){setContent(`<div class="panel"><b>Error:</b> ${esc(e.message)}</div>`)}
 }
-
+async function q(table,cols='*',order='created_at'){
+ let r=await sb.from(table).select(cols).order(order,{ascending:false}).limit(1000);if(r.error)throw r.error;return r.data||[]
 }
-
-
-async function q(table,cols='*'){
-
-let r=await db
-.from(table)
-.select(cols)
-.order('created_at',{ascending:false})
-.limit(500);
-
-
-if(r.error){
-
-r=await db
-.from(table)
-.select(cols)
-.limit(500);
-
-}
-
-
-if(r.error)throw r.error;
-
-return r.data||[];
-
-}
-
-
-async function rpc(fn,args){
-
-let r=await db.rpc(fn,args);
-
-if(r.error)throw r.error;
-
-return r.data;
-
-}
-
-
+async function rpc(fn,args){let r=await sb.rpc(fn,args);if(r.error)throw r.error;return r.data}
 function table(rows,cols){
-
-if(!rows.length)
-return '<div class="muted">No records yet.</div>';
-
-
-return `
-<div class="table-wrap">
-<table>
-
-<thead>
-<tr>
-${cols.map(c=>`<th>${esc(c.label)}</th>`).join('')}
-</tr>
-</thead>
-
-<tbody>
-
-${rows.map(r=>`
-<tr>
-${cols.map(c=>`
-<td>${c.f?c.f(r):esc(r[c.k])}</td>
-`).join('')}
-</tr>
-`).join('')}
-
-</tbody>
-</table>
-</div>
-`;
-
+ if(!rows.length)return '<div class="empty">No records yet.</div>';
+ return `<div class="tablewrap"><table><thead><tr>${cols.map(c=>`<th>${esc(c.label)}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${cols.map(c=>`<td>${c.f?c.f(r):esc(r[c.k])}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`
 }
-
-
-function addBtn(label,fn=''){
-
-return `<button class="primary"
-onclick="${fn}">
-${label}
-</button>`;
-
+function btn(label,fn,cls='primary'){return `<button class="${cls}" onclick="${fn}">${label}</button>`}
+function field(n,label,type='text',required=false,value=''){return `<div class="field"><label>${esc(label)}</label><input id="f_${n}" type="${type}" value="${esc(value)}" ${required?'required':''}></div>`}
+function val(n){return document.getElementById('f_'+n)?.value}
+function selectHtml(n,label,items,placeholder='Select...'){
+ return `<div class="field"><label>${esc(label)}</label><select id="f_${n}"><option value="">${placeholder}</option>${items.map(x=>`<option value="${x.id}">${esc(x.label)}</option>`).join('')}</select></div>`
 }
-
+function closeModal(){modal.classList.add('hidden')}
+async function openModal(titleText,body,saveFn){
+ modal.classList.remove('hidden');modalTitle.textContent=titleText;modalBody.innerHTML=`<div class="formgrid">${body}</div><div class="right" style="margin-top:12px">${btn('Save',saveFn)}</div>`
+}
 
 async function dashboard(){
-
-let d=await q('v_dashboard');
-
-let x=d[0]||{};
-
-let profit=
-Number(x.revenue||0)
--
-Number(x.cogs||0)
--
-Number(x.expenses||0);
-
-
-document.getElementById('content').innerHTML=`
-
-<div class="cards">
-
-<div class="card">
-<div class="muted">Sales</div>
-<div class="metric">${money(x.revenue)}</div>
-<div class="small muted">Posted sales</div>
-</div>
-
-<div class="card">
-<div class="muted">COGS</div>
-<div class="metric">${money(x.cogs)}</div>
-<div class="small muted">Cost of goods sold</div>
-</div>
-
-<div class="card">
-<div class="muted">Expenses</div>
-<div class="metric">${money(x.expenses)}</div>
-<div class="small muted">Operating expenses</div>
-</div>
-
-<div class="card">
-<div class="muted">Net Profit</div>
-<div class="metric">${money(profit)}</div>
-<div class="small muted">Current posted activity</div>
-</div>
-
-</div>
-
-
-<div class="grid" style="margin-top:16px">
-
-<div class="panel">
-<h3>Business Flow</h3>
-
-<p>
-Purchase -> Stock -> Production -> QC -> Finished Stock
--> Sale -> Delivery -> Payment -> Profit
-</p>
-
-<p class="small muted">
-Stock posting is handled by Supabase database functions.
-</p>
-
-</div>
-
-
-<div class="panel">
-
-<h3>Quick Actions</h3>
-
-<div class="toolbar">
-
-${addBtn(
-'New Customer',
-"openForm('customers')"
-)}
-
-${addBtn(
-'New Purchase',
-"openForm('purchases')"
-)}
-
-${addBtn(
-'New Sale',
-"openForm('sales')"
-)}
-
-${addBtn(
-'Production Batch',
-"openForm('production')"
-)}
-
-</div>
-
-</div>
-
-</div>
-`;
-
+ const d=(await q('v_dashboard'))[0]||{},fund=(await q('v_funds'))[0]||{},settingsRow=(await q('company_settings'))[0]||{};
+ const net=Number(d.revenue||0)-Number(d.cogs||0)-Number(d.expenses||0);
+ const gross=Number(d.revenue||0)-Number(d.cogs||0);
+ const assets=Number(d.cash_bank||0)+Number(d.inventory_value||0)+Number(d.receivables||0);
+ const liabilities=Number(d.payables||0);
+ const netAssets=assets-liabilities;
+ const valuation=Math.max(0,netAssets,net*12*Number(settingsRow.valuation_multiple||4)/4);
+ const available=Math.max(0,Number(d.cash_bank||0)-Number(d.payables||0));
+ setContent(`
+ <div class="cards">
+  <div class="card"><div class="muted">Today's / Current Sales</div><div class="metric">${money(d.revenue)}</div><div class="kpi-note">Posted sales</div></div>
+  <div class="card"><div class="muted">Gross Profit</div><div class="metric">${money(gross)}</div><div class="kpi-note">Sales minus product cost</div></div>
+  <div class="card"><div class="muted">Net Profit</div><div class="metric">${money(net)}</div><div class="kpi-note">After operating expenses</div></div>
+  <div class="card"><div class="muted">Cash + Bank</div><div class="metric">${money(d.cash_bank)}</div><div class="kpi-note">Recorded cash position</div></div>
+ </div>
+ <div class="cards" style="margin-top:12px">
+  <div class="card"><div class="muted">Inventory Value</div><div class="metric">${money(d.inventory_value)}</div></div>
+  <div class="card"><div class="muted">Customer Receivable</div><div class="metric">${money(d.receivables)}</div></div>
+  <div class="card"><div class="muted">Supplier Payable</div><div class="metric">${money(d.payables)}</div></div>
+  <div class="card"><div class="muted">Total Investment</div><div class="metric">${money(d.net_investment)}</div></div>
+ </div>
+ <div class="grid" style="margin-top:14px">
+  <div class="panel"><h3>Money available to use</h3><div class="moneybig">${money(available)}</div><p class="muted small">Cash + bank less supplier/customer-related short-term payable shown by the system. Keep a reserve for salaries, utilities and upcoming bills.</p>
+   <div class="statline"><span>Total investment put in</span><b>${money(d.net_investment)}</b></div>
+   <div class="statline"><span>Cash + bank</span><b>${money(d.cash_bank)}</b></div>
+   <div class="statline"><span>Inventory</span><b>${money(d.inventory_value)}</b></div>
+  </div>
+  <div class="panel"><h3>Business value estimate</h3><div class="moneybig">${money(valuation)}</div><p class="muted small">Management estimate based on net assets / profit multiple. It is not a guaranteed market selling price.</p>
+   <div class="statline"><span>Net assets</span><b>${money(netAssets)}</b></div>
+   <div class="statline"><span>Annualized current net profit</span><b>${money(net*12)}</b></div>
+  </div>
+ </div>
+ <div class="grid" style="margin-top:14px">
+  <div class="panel"><h3>Quick actions</h3><div class="toolbar">${btn('New Sale',"openSale()")}${btn('New Purchase',"openPurchase()")}${btn('Add Stock',"openInventory()")}${btn('Expense',"openExpense()")}${btn('Receive Payment',"openPayment()")}</div></div>
+  <div class="panel"><h3>Ownership</h3><div class="statline"><span>${esc(settingsRow.owner_name||'Owner')}</span><b>${settingsRow.owner_pct||55}%</b></div><div class="statline"><span>${esc(settingsRow.partner_name||'Working Partner')}</span><b>${settingsRow.partner_pct||30}%</b></div><div class="statline"><span>Investor Pool</span><b>${settingsRow.investor_pct||15}%</b></div></div>
+ </div>`)
 }
 
-
-const basicDefs={
-
-customers:{
-title:'Customers',
-table:'customers',
-fields:[
-['name','Name','text',1],
-['phone','Phone','text',1],
-['address','Address','text',1],
-['credit_limit','Credit Limit','number',0]
-]
-},
-
-suppliers:{
-title:'Suppliers',
-table:'suppliers',
-fields:[
-['name','Name','text',1],
-['phone','Phone','text',1],
-['address','Address','text',1],
-['payment_terms','Payment Terms','text',0]
-]
-},
-
-products:{
-title:'Products',
-table:'products',
-fields:[
-['sku','SKU','text',1],
-['name','Name','text',1],
-['size_ml','Size (ml)','number',1],
-['unit','Unit','text',1],
-['sale_price','Sale Price','number',1],
-['cost_price','Cost Price','number',0],
-['reorder_level','Reorder Level','number',0]
-]
-},
-
-locations:{
-title:'Warehouses / Locations',
-table:'inventory_locations',
-fields:[
-['name','Location Name','text',1],
-['location_type','Type','text',1],
-['address','Address','text',0]
-]
-},
-
-expenses:{
-title:'Expenses',
-table:'expenses',
-fields:[
-['expense_date','Date','date',1],
-['category','Category','text',1],
-['description','Description','text',1],
-['amount','Amount','number',1],
-['payment_method','Payment Method','text',0]
-]
-},
-
-cash:{
-title:'Cash / Bank Entries',
-table:'cash_entries',
-fields:[
-['entry_date','Date','date',1],
-['account','Account','text',1],
-['entry_type','Type','text',1],
-['amount','Amount','number',1],
-['description','Description','text',1],
-['reference','Reference','text',0]
-]
-},
-
-capital:{
-title:'Capital / Investors Ledger',
-table:'capital_ledger',
-fields:[
-['party_name','Party','text',1],
-['entry_date','Date','date',1],
-['entry_type','Type','text',1],
-['amount','Amount','number',1],
-['notes','Notes','text',0]
-]
-},
-
-employees:{
-title:'Employees',
-table:'employees',
-fields:[
-['name','Name','text',1],
-['phone','Phone','text',0],
-['designation','Designation','text',1],
-['salary','Monthly Salary','number',0],
-['commission_rate','Commission %','number',0]
-]
+async function customers(){
+ const rows=await q('v_customer_balances');
+ setContent(`<div class="panel"><div class="toolbar">${btn('New Customer',"openCustomer()")}<button class="ghost" onclick="load('customers')">Refresh</button></div>${table(rows,[{label:'Code',k:'code'},{label:'Customer',k:'name'},{label:'Phone',k:'phone'},{label:'Credit Limit',k:'credit_limit',f:r=>money(r.credit_limit)},{label:'Balance',k:'balance',f:r=>money(r.balance)},{label:'Action',k:'id',f:r=>btn('Payment',`openPayment('${r.id}')`,'success')}])}</div>`)
 }
-
-};
-
-
-async function basic(key){
-
-let d=basicDefs[key];
-
-let rows=await q(d.table);
-
-
-let cols=d.fields.map(f=>({
-
-label:f[1],
-k:f[0],
-
-f:r=>
-(
-f[0].includes('amount')||
-f[0].includes('price')||
-f[0]==='salary'
-)
-?money(r[f[0]])
-:esc(r[f[0]])
-
-}));
-
-
-document.getElementById('content').innerHTML=`
-
-<div class="panel">
-
-<div class="toolbar">
-
-${addBtn(
-'New',
-`openForm('${key}')`
-)}
-
-<button class="ghost"
-onclick="load('${key}')">
-Refresh
-</button>
-
-</div>
-
-${table(rows,cols)}
-
-</div>
-`;
-
+async function suppliers(){
+ const rows=await q('v_supplier_balances');
+ setContent(`<div class="panel"><div class="toolbar">${btn('New Supplier',"openSupplier()")}<button class="ghost" onclick="load('suppliers')">Refresh</button></div>${table(rows,[{label:'Code',k:'code'},{label:'Supplier',k:'name'},{label:'Phone',k:'phone'},{label:'Balance',k:'balance',f:r=>money(r.balance)},{label:'Action',k:'id',f:r=>btn('Pay Supplier',`openSupplierPayment('${r.id}')`,'success')}])}</div>`)
 }
-
-
-async function customers(){await basic('customers')}
-async function suppliers(){await basic('suppliers')}
-async function products(){await basic('products')}
-async function locations(){await basic('locations')}
-async function expenses(){await basic('expenses')}
-async function cash(){await basic('cash')}
-async function capital(){await basic('capital')}
-async function employees(){await basic('employees')}
-
-
+async function products(){
+ const rows=await q('products');
+ setContent(`<div class="panel"><div class="toolbar">${btn('New Product',"openProduct()")}<button class="ghost" onclick="load('products')">Refresh</button></div><div class="notice">You manage SKU and product name. Database UUIDs are hidden and automatic.</div>${table(rows,[{label:'SKU',k:'sku'},{label:'Product',k:'name'},{label:'Size',k:'size_ml',f:r=>r.size_ml?r.size_ml+' ml':'-'},{label:'Sale Price',k:'sale_price',f:r=>money(r.sale_price)},{label:'Cost',k:'cost_price',f:r=>money(r.cost_price)},{label:'Reorder',k:'reorder_level'},{label:'Status',k:'active',f:r=>r.active?'<span class="badge good">Active</span>':'<span class="badge">Archived</span>'},{label:'Action',k:'id',f:r=>r.active?btn('Archive',`archiveProduct('${r.id}')`,'danger'):btn('Activate',`activateProduct('${r.id}')`,'success')}])}</div>`)
+}
 async function inventory(){
-
-let rows=await q('v_inventory');
-
-
-document.getElementById('content').innerHTML=`
-
-<div class="panel">
-
-<div class="toolbar">
-
-${addBtn(
-'Stock Adjustment',
-"openForm('inventory')"
-)}
-
-<button class="ghost"
-onclick="load('inventory')">
-Refresh
-</button>
-
-</div>
-
-
-${table(rows,[
-
-{label:'SKU',k:'sku'},
-
-{label:'Product',k:'product_name'},
-
-{label:'Location',k:'location_name'},
-
-{label:'Qty',k:'qty'},
-
-{
-label:'Average Cost',
-k:'avg_cost',
-f:r=>money(r.avg_cost)
-},
-
-{
-label:'Stock Value',
-k:'stock_value',
-f:r=>money(r.stock_value)
+ const rows=await q('v_inventory');
+ setContent(`<div class="panel"><div class="toolbar">${btn('Add Stock',"openInventory()")}${btn('Remove / Adjust Stock',"openInventory(-1)",'ghost')}<button class="ghost" onclick="load('inventory')">Refresh</button></div>${table(rows,[{label:'SKU',k:'sku'},{label:'Product',k:'product_name'},{label:'Location',k:'location_name'},{label:'Quantity',k:'qty'},{label:'Average Cost',k:'avg_cost',f:r=>money(r.avg_cost)},{label:'Stock Value',k:'stock_value',f:r=>money(r.stock_value)},{label:'Status',k:'stock_status',f:r=>r.stock_status==='LOW'?'<span class="badge warn">LOW STOCK</span>':'<span class="badge good">OK</span>'}])}</div>`)
 }
-
-])}
-
-</div>
-`;
-
-}
-
-
-async function purchases(){
-
-let rows=await q('purchase_orders');
-
-
-document.getElementById('content').innerHTML=`
-
-<div class="panel">
-
-<div class="toolbar">
-
-${addBtn(
-'New Purchase',
-"openForm('purchases')"
-)}
-
-<button class="ghost"
-onclick="load('purchases')">
-Refresh
-</button>
-
-</div>
-
-
-${table(rows,[
-
-{label:'PO',k:'po_no'},
-
-{label:'Supplier',k:'supplier_name'},
-
-{label:'Date',k:'order_date'},
-
-{
-label:'Total',
-k:'total',
-f:r=>money(r.total)
-},
-
-{
-label:'Status',
-k:'status',
-f:r=>`<span class="badge">${esc(r.status)}</span>`
-}
-
-])}
-
-</div>
-`;
-
-}
-
-
 async function sales(){
-
-let rows=await q('sales_orders');
-
-
-document.getElementById('content').innerHTML=`
-
-<div class="panel">
-
-<div class="toolbar">
-
-${addBtn(
-'New Sale',
-"openForm('sales')"
-)}
-
-<button class="ghost"
-onclick="load('sales')">
-Refresh
-</button>
-
-</div>
-
-
-${table(rows,[
-
-{label:'Order',k:'order_no'},
-
-{label:'Customer',k:'customer_name'},
-
-{label:'Date',k:'order_date'},
-
-{
-label:'Total',
-k:'total',
-f:r=>money(r.total)
-},
-
-{
-label:'Status',
-k:'status',
-f:r=>`<span class="badge">${esc(r.status)}</span>`
-},
-
-{
-label:'Action',
-k:'id',
-f:r=>
-r.status==='draft'
-?
-`<button class="success"
-onclick="postSale('${r.id}')">
-Post
-</button>`
-:''
+ const rows=await q('sales_orders');
+ setContent(`<div class="panel"><div class="toolbar">${btn('New Sale',"openSale()")}<button class="ghost" onclick="load('sales')">Refresh</button></div>${table(rows,[{label:'Sale',k:'order_no'},{label:'Date',k:'order_date'},{label:'Customer',k:'customer_id',f:r=>customerName(r.customer_id)},{label:'Total',k:'total',f:r=>money(r.total)},{label:'Paid',k:'paid',f:r=>money(r.paid)},{label:'Due',k:'due',f:r=>money(r.due)},{label:'Status',k:'status',f:r=>`<span class="badge">${esc(r.status)}</span>`},{label:'Action',k:'id',f:r=>r.status==='draft'?btn('Post Sale',`postSale('${r.id}')`,'success'):''}])}</div>`)
 }
-
-])}
-
-</div>
-`;
-
+async function purchases(){
+ const rows=await q('purchase_orders');
+ setContent(`<div class="panel"><div class="toolbar">${btn('New Purchase',"openPurchase()")}<button class="ghost" onclick="load('purchases')">Refresh</button></div>${table(rows,[{label:'Purchase',k:'po_no'},{label:'Date',k:'order_date'},{label:'Supplier',k:'supplier_id',f:r=>supplierName(r.supplier_id)},{label:'Total',k:'total',f:r=>money(r.total)},{label:'Status',k:'status',f:r=>`<span class="badge">${esc(r.status)}</span>`},{label:'Action',k:'id',f:r=>r.status==='draft'?btn('Receive Stock',`receivePurchase('${r.id}')`,'success'):''}])}</div>`)
 }
-
-
 async function production(){
-
-let rows=await q('production_batches');
-
-
-document.getElementById('content').innerHTML=`
-
-<div class="panel">
-
-<div class="toolbar">
-
-${addBtn(
-'New Batch',
-"openForm('production')"
-)}
-
-<button class="ghost"
-onclick="load('production')">
-Refresh
-</button>
-
-</div>
-
-
-${table(rows,[
-
-{label:'Batch',k:'batch_no'},
-
-{label:'Product',k:'product_name'},
-
-{label:'Quantity',k:'qty'},
-
-{label:'Date',k:'production_date'},
-
-{
-label:'Status',
-k:'status',
-f:r=>`<span class="badge">${esc(r.status)}</span>`
-},
-
-{
-label:'Action',
-k:'id',
-f:r=>
-r.status==='planned'
-?
-`<button class="success"
-onclick="completeProd('${r.id}')">
-Complete
-</button>`
-:''
+ const rows=await q('production_batches');
+ setContent(`<div class="panel"><div class="toolbar">${btn('New Production',"openProduction()")}<button class="ghost" onclick="load('production')">Refresh</button></div>${table(rows,[{label:'Batch',k:'batch_no'},{label:'Date',k:'production_date'},{label:'Product',k:'product_id',f:r=>productName(r.product_id)},{label:'Planned',k:'planned_qty'},{label:'Produced',k:'produced_qty'},{label:'Status',k:'status',f:r=>`<span class="badge">${esc(r.status)}</span>`},{label:'Action',k:'id',f:r=>r.status==='planned'?btn('Complete',`completeProduction('${r.id}')`,'success'):''}])}</div>`)
 }
-
-])}
-
-</div>
-`;
-
+async function recipes(){
+ const boms=await q('boms');
+ const lines=await q('bom_lines');
+ await loadCache();
+ setContent(`<div class="panel"><div class="toolbar">${btn('Add Recipe Line',"openRecipe()")}<button class="ghost" onclick="load('recipes')">Refresh</button></div>
+ <div class="notice">Optional: use this only if production should automatically consume bottles, caps, labels, water or other materials. Quantity is the material used for one yield unit.</div>
+ ${table(lines,[{label:'Finished Product',k:'bom_id',f:r=>{let b=boms.find(x=>x.id===r.bom_id);return b?productName(b.product_id):'-'}},{label:'Material',k:'material_product_id',f:r=>productName(r.material_product_id)},{label:'Qty per Yield',k:'qty_per_yield'},{label:'Action',k:'id',f:r=>btn('Delete',`deleteRecipe('${r.id}')`,'danger')}])}</div>`)
 }
-
-
-async function qc(){
-
-let rows=await q('qc_checks');
-
-
-document.getElementById('content').innerHTML=`
-
-<div class="panel">
-
-<div class="toolbar">
-
-<button class="ghost"
-onclick="load('qc')">
-Refresh
-</button>
-
-</div>
-
-
-${table(rows,[
-
-{label:'Batch',k:'batch_no'},
-
-{label:'Check',k:'check_name'},
-
-{label:'Result',k:'result'},
-
-{label:'Checked',k:'checked_at'},
-
-{label:'Notes',k:'notes'}
-
-])}
-
-</div>
-`;
-
+async function openRecipe(){
+ await loadCache();
+ const products=cache.products.filter(x=>x.active);
+ const body=selectHtml('bom_product_id','Finished Product',products.map(x=>({id:x.id,label:x.sku+' - '+x.name})))+
+ selectHtml('material_product_id','Material',products.map(x=>({id:x.id,label:x.sku+' - '+x.name})))+
+ field('qty_per_yield','Material Quantity per 1 Yield','number',true)+field('yield_qty','Yield Quantity','number',true,'1');
+ await openModal('Add Production Recipe',body,'saveRecipe()')
 }
-
+async function saveRecipe(){
+ try{
+  const product=val('bom_product_id'),material=val('material_product_id');
+  let bom=(await sb.from('boms').select('*').eq('product_id',product).maybeSingle()).data;
+  if(!bom){let r=await sb.from('boms').insert({product_id:product,yield_qty:Number(val('yield_qty')||1),active:true}).select().single();if(r.error)throw r.error;bom=r.data}
+  let r=await sb.from('bom_lines').insert({bom_id:bom.id,material_product_id:material,qty_per_yield:Number(val('qty_per_yield'))});if(r.error)throw r.error;
+  closeModal();toast('Recipe saved');load('recipes')
+ }catch(e){toast(e.message)}
+}
+async function deleteRecipe(id){if(!confirm('Delete this recipe line?'))return;let r=await sb.from('bom_lines').delete().eq('id',id);if(r.error)toast(r.error.message);else load('recipes')}
 
 async function deliveries(){
-
-let rows=await q('deliveries');
-
-
-document.getElementById('content').innerHTML=`
-
-<div class="panel">
-
-<div class="toolbar">
-
-${addBtn(
-'New Delivery',
-"openForm('deliveries')"
-)}
-
-<button class="ghost"
-onclick="load('deliveries')">
-Refresh
-</button>
-
-</div>
-
-
-${table(rows,[
-
-{label:'Delivery',k:'delivery_no'},
-
-{label:'Order',k:'order_no'},
-
-{label:'Vehicle',k:'vehicle_no'},
-
-{label:'Driver',k:'driver_name'},
-
-{label:'Date',k:'delivery_date'},
-
-{label:'Status',k:'status'}
-
-])}
-
-</div>
-`;
-
+ const rows=await q('deliveries');
+ setContent(`<div class="panel"><div class="toolbar">${btn('New Delivery',"openDelivery()")}<button class="ghost" onclick="load('deliveries')">Refresh</button></div>${table(rows,[{label:'Delivery',k:'delivery_no'},{label:'Date',k:'delivery_date'},{label:'Order',k:'sales_order_id',f:r=>orderName(r.sales_order_id)},{label:'Driver',k:'driver_name'},{label:'Vehicle',k:'vehicle_no'},{label:'Route',k:'route'},{label:'Status',k:'status'}])}</div>`)
 }
-
-
+async function expenses(){
+ const rows=await q('expenses');
+ setContent(`<div class="panel"><div class="toolbar">${btn('New Expense',"openExpense()")}<button class="ghost" onclick="load('expenses')">Refresh</button></div>${table(rows,[{label:'Expense',k:'expense_no'},{label:'Date',k:'expense_date'},{label:'Category',k:'category'},{label:'Description',k:'description'},{label:'Amount',k:'amount',f:r=>money(r.amount)},{label:'Paid From',k:'payment_method'}])}</div>`)
+}
+async function cash(){
+ const rows=await q('cash_entries');
+ setContent(`<div class="panel"><div class="toolbar">${btn('New Cash Entry',"openCash()")}<button class="ghost" onclick="load('cash')">Refresh</button></div>${table(rows,[{label:'Date',k:'entry_date'},{label:'Account',k:'account'},{label:'Type',k:'entry_type'},{label:'Amount',k:'amount',f:r=>money(r.amount)},{label:'Description',k:'description'}])}</div>`)
+}
+async function capital(){
+ const rows=await q('capital_ledger');
+ const sums=await q('v_capital_summary');
+ const fund=(await q('v_funds'))[0]||{};
+ setContent(`<div class="cards"><div class="card"><div class="muted">Total Investment</div><div class="metric">${money(fund.total_investment)}</div></div><div class="card"><div class="muted">Withdrawn</div><div class="metric">${money(fund.total_withdrawal)}</div></div><div class="card"><div class="muted">Net Investment</div><div class="metric">${money(Number(fund.total_investment||0)-Number(fund.total_withdrawal||0))}</div></div><div class="card"><div class="muted">Inventory Value</div><div class="metric">${money(fund.inventory_value)}</div></div></div>
+ <div class="panel" style="margin-top:14px"><div class="toolbar">${btn('Add Investment',"openCapital()")}<button class="ghost" onclick="load('capital')">Refresh</button></div>${table(rows,[{label:'Date',k:'entry_date'},{label:'Party',k:'party_name'},{label:'Type',k:'entry_type'},{label:'Amount',k:'amount',f:r=>money(r.amount)},{label:'Note',k:'note'}])}</div>
+ <div class="panel"><h3>Investment summary</h3>${table(sums,[{label:'Party',k:'party_name'},{label:'Type',k:'party_type'},{label:'Invested',k:'invested',f:r=>money(r.invested)},{label:'Withdrawn',k:'withdrawn',f:r=>money(r.withdrawn)},{label:'Distributed',k:'distributed',f:r=>money(r.distributed)}])}</div>`)
+}
+async function employees(){
+ const rows=await q('employees');
+ setContent(`<div class="panel"><div class="toolbar">${btn('New Employee',"openEmployee()")}<button class="ghost" onclick="load('employees')">Refresh</button></div>${table(rows,[{label:'No',k:'employee_no'},{label:'Name',k:'name'},{label:'Phone',k:'phone'},{label:'Role',k:'designation'},{label:'Salary',k:'salary',f:r=>money(r.salary)},{label:'Commission',k:'commission_rate',f:r=>r.commission_rate+'%'},{label:'Status',k:'active',f:r=>r.active?'Active':'Inactive'}])}</div>`)
+}
 async function reports(){
-
-let d=await q('v_dashboard');
-
-let x=d[0]||{};
-
-let rows=[
-
-{name:'Revenue',v:x.revenue},
-
-{name:'COGS',v:x.cogs},
-
-{
-name:'Gross Profit',
-v:Number(x.revenue||0)-Number(x.cogs||0)
-},
-
-{name:'Operating Expenses',v:x.expenses},
-
-{
-name:'Net Profit',
-v:Number(x.revenue||0)
--
-Number(x.cogs||0)
--
-Number(x.expenses||0)
+ const d=(await q('v_dashboard'))[0]||{},fund=(await q('v_funds'))[0]||{},set=(await q('company_settings'))[0]||{};
+ const gross=Number(d.revenue||0)-Number(d.cogs||0),net=gross-Number(d.expenses||0);
+ const valuation=Math.max(0,(Number(d.cash_bank||0)+Number(d.inventory_value||0)+Number(d.receivables||0)-Number(d.payables||0)),net*12*Number(set.valuation_multiple||4)/4);
+ setContent(`<div class="grid">
+ <div class="panel"><h3>Profit & Loss</h3><div class="statline"><span>Revenue</span><b>${money(d.revenue)}</b></div><div class="statline"><span>COGS</span><b>${money(d.cogs)}</b></div><div class="statline"><span>Gross Profit</span><b>${money(gross)}</b></div><div class="statline"><span>Operating Expenses</span><b>${money(d.expenses)}</b></div><div class="statline"><span>Net Profit</span><b>${money(net)}</b></div></div>
+ <div class="panel"><h3>Company Position</h3><div class="statline"><span>Cash + Bank</span><b>${money(d.cash_bank)}</b></div><div class="statline"><span>Inventory</span><b>${money(d.inventory_value)}</b></div><div class="statline"><span>Receivables</span><b>${money(d.receivables)}</b></div><div class="statline"><span>Payables</span><b>${money(d.payables)}</b></div><div class="statline"><span>Net Assets</span><b>${money(Number(d.cash_bank||0)+Number(d.inventory_value||0)+Number(d.receivables||0)-Number(d.payables||0))}</b></div><div class="statline"><span>Estimated Business Value</span><b>${money(valuation)}</b></div></div>
+ </div>
+ <div class="panel" style="margin-top:14px"><h3>What you can see here</h3><p class="muted">Sales, product costs, expenses, receivables, supplier payables, inventory value, cash/bank, total investment and an estimated business value all come from saved database records.</p></div>`)
 }
-
-];
-
-
-document.getElementById('content').innerHTML=`
-
-<div class="grid">
-
-<div class="panel">
-
-<h3>Profit and Loss</h3>
-
-${table(rows,[
-
-{label:'Account',k:'name'},
-
-{
-label:'Amount',
-k:'v',
-f:r=>money(r.v)
-}
-
-])}
-
-</div>
-
-
-<div class="panel">
-
-<h3>Ownership</h3>
-
-<p>
-Owner 55% |
-Working Partner 30% |
-Investor Pool 15%
-</p>
-
-<p class="small muted">
-Capital movements are recorded in Capital / Investors.
-</p>
-
-</div>
-
-</div>
-`;
-
-}
-
-
 async function settings(){
-
-let rows=await q('company_settings');
-
-
-document.getElementById('content').innerHTML=`
-
-<div class="panel">
-
-<h3>Company Settings</h3>
-
-${table(rows,[
-
-{label:'Key',k:'key'},
-
-{label:'Value',k:'value'}
-
-])}
-
-<button class="primary"
-onclick="openForm('settings')">
-Update Ownership
-</button>
-
-</div>
-`;
-
+ const r=(await q('company_settings'))[0]||{};
+ setContent(`<div class="panel"><h3>Company Settings</h3><div class="formgrid">${field('company_name','Company Name','text',true,r.company_name)}${field('owner_name','Owner Name','text',true,r.owner_name)}${field('owner_pct','Owner %','number',true,r.owner_pct)}${field('partner_name','Partner Name','text',false,r.partner_name)}${field('partner_pct','Partner %','number',true,r.partner_pct)}${field('investor_pct','Investor Pool %','number',true,r.investor_pct)}${field('reserve_pct','Reserve %','number',true,r.reserve_pct)}${field('valuation_multiple','Valuation Profit Multiple','number',true,r.valuation_multiple)}${field('opening_cash','Opening Cash','number',false,r.opening_cash)}${field('opening_bank','Opening Bank','number',false,r.opening_bank)}</div><div class="right">${btn('Save Settings',"saveSettings()")}</div></div>`)
+}
+async function saveSettings(){
+ try{
+  const a=Number(val('owner_pct')),b=Number(val('partner_pct')),c=Number(val('investor_pct'));
+  if(Math.abs(a+b+c-100)>0.001)throw Error('Ownership percentages must total 100%.');
+  const old=(await q('company_settings'))[0];
+  const r=await sb.from('company_settings').update({company_name:val('company_name'),owner_name:val('owner_name'),owner_pct:a,partner_name:val('partner_name'),partner_pct:b,investor_pct:c,reserve_pct:Number(val('reserve_pct')||0),valuation_multiple:Number(val('valuation_multiple')||4),opening_cash:Number(val('opening_cash')||0),opening_bank:Number(val('opening_bank')||0),updated_at:new Date().toISOString()}).eq('id',old.id);
+  if(r.error)throw r.error;toast('Settings saved');load('settings')
+ }catch(e){toast(e.message)}
 }
 
+async function loadCache(){
+ cache.customers=await q('customers','id,name,code,credit_limit,active');
+ cache.suppliers=await q('suppliers','id,name,code,active');
+ cache.products=await q('products','id,sku,name,sale_price,cost_price,active');
+ cache.locations=await q('inventory_locations','id,code,name,active');
+ cache.sales=await q('sales_orders','id,order_no');
+}
+function customerName(id){return (cache.customers||[]).find(x=>x.id===id)?.name||id||'-'}
+function supplierName(id){return (cache.suppliers||[]).find(x=>x.id===id)?.name||id||'-'}
+function productName(id){return (cache.products||[]).find(x=>x.id===id)?.name||id||'-'}
+function orderName(id){return (cache.sales||[]).find(x=>x.id===id)?.order_no||id||'-'}
 
-function fieldHtml(
-name,
-label,
-type,
-required,
-value=''
-){
+async function openCustomer(){
+ await openModal('New Customer',field('name','Customer Name','text',true)+field('phone','Phone','text',true)+field('address','Address')+field('credit_limit','Credit Limit','number')+field('opening_balance','Opening Balance','number'),'saveCustomer()')
+}
+async function saveCustomer(){try{let o={name:val('name'),phone:val('phone'),address:val('address')||null,credit_limit:Number(val('credit_limit')||0),opening_balance:Number(val('opening_balance')||0)};let r=await sb.from('customers').insert(o);if(r.error)throw r.error;closeModal();toast('Customer saved');load('customers')}catch(e){toast(e.message)}}
+async function openSupplier(){
+ await openModal('New Supplier',field('name','Supplier Name','text',true)+field('phone','Phone')+field('address','Address')+field('opening_balance','Opening Balance','number'),'saveSupplier()')
+}
+async function saveSupplier(){try{let o={name:val('name'),phone:val('phone'),address:val('address')||null,opening_balance:Number(val('opening_balance')||0)};let r=await sb.from('suppliers').insert(o);if(r.error)throw r.error;closeModal();toast('Supplier saved');load('suppliers')}catch(e){toast(e.message)}}
+async function openProduct(){
+ await openModal('New Product',field('sku','SKU','text',true)+field('name','Product Name','text',true)+field('size_ml','Size (ml)','number',true)+field('unit','Unit','text',true,'Bottle')+field('sale_price','Sale Price','number',true)+field('cost_price','Cost Price','number')+field('reorder_level','Reorder Level','number'),'saveProduct()')
+}
+async function saveProduct(){try{let o={sku:val('sku'),name:val('name'),size_ml:Number(val('size_ml')),unit:val('unit'),sale_price:Number(val('sale_price')),cost_price:Number(val('cost_price')||0),reorder_level:Number(val('reorder_level')||0)};let r=await sb.from('products').insert(o);if(r.error)throw r.error;closeModal();toast('Product saved');load('products')}catch(e){toast(e.message)}}
+async function archiveProduct(id){if(!confirm('Archive this product? Old transactions will stay safe.'))return;let r=await sb.from('products').update({active:false}).eq('id',id);if(r.error)toast(r.error.message);else load('products')}
+async function activateProduct(id){let r=await sb.from('products').update({active:true}).eq('id',id);if(r.error)toast(r.error.message);else load('products')}
 
-return `
-<div class="field">
-
-<label>${esc(label)}</label>
-
-<input
-id="f_${name}"
-type="${type}"
-value="${esc(value)}"
-${required?'required':''}
->
-
-</div>
-`;
-
+async function openInventory(direction=1){
+ await loadCache();
+ let prods=cache.products.filter(x=>x.active),locs=cache.locations.filter(x=>x.active);
+ const body=selectHtml('product_id','Product',prods.map(x=>({id:x.id,label:x.sku+' - '+x.name})))+
+ `<input type="hidden" id="f_location_id" value="${locs[0]?.id||''}">`+
+ field('qty',direction<0?'Quantity to Remove':'Quantity to Add','number',true)+field('unit_cost','Unit Cost','number',false)+field('reason','Reason','text',true,direction<0?'Stock adjustment':'Opening stock');
+ await openModal(direction<0?'Remove / Adjust Stock':'Add Stock',body,'saveInventory('+direction+')')
+}
+async function saveInventory(direction){
+ try{let qty=Math.abs(Number(val('qty')))*(direction<0?-1:1);await rpc('post_stock_adjustment',{p_product:val('product_id'),p_location:val('location_id'),p_qty:qty,p_unit_cost:Number(val('unit_cost')||0),p_reason:val('reason')});closeModal();toast('Inventory saved');load('inventory')}catch(e){toast(e.message)}
 }
 
-
-async function openForm(key){
-
-document.getElementById('modal')
-.classList.remove('hidden');
-
-
-let body='';
-
-
-if(basicDefs[key]){
-
-body=basicDefs[key].fields
-.map(f=>
-fieldHtml(
-f[0],
-f[1],
-f[2],
-f[3]
-)
-)
-.join('');
-
+async function openSale(){
+ await loadCache();
+ const prods=cache.products.filter(x=>x.active),cust=cache.customers.filter(x=>x.active),locs=cache.locations.filter(x=>x.active);
+ const body=selectHtml('customer_id','Customer',cust.map(x=>({id:x.id,label:x.code+' - '+x.name})),'Walk-in / Cash Customer')+
+ field('order_date','Date','date',true,today())+
+ selectHtml('product_id','Product',prods.map(x=>({id:x.id,label:x.sku+' - '+x.name})))+
+ `<input type="hidden" id="f_location_id" value="${locs[0]?.id||''}">`+
+ field('qty','Quantity','number',true)+field('unit_price','Sale Price','number',true)+field('paid','Paid Now','number')+field('notes','Notes');
+ await openModal('New Sale',body,'saveSale()');
+ document.getElementById('f_product_id').onchange=()=>{let p=prods.find(x=>x.id===val('product_id'));if(p)document.getElementById('f_unit_price').value=p.sale_price}
 }
-
-
-else if(key==='inventory'){
-
-body=
-
-fieldHtml(
-'product_id',
-'Product UUID',
-'text',
-1
-)+
-
-fieldHtml(
-'location_id',
-'Warehouse UUID',
-'text',
-1
-)+
-
-fieldHtml(
-'qty',
-'Quantity (+ add / - remove)',
-'number',
-1
-)+
-
-fieldHtml(
-'unit_cost',
-'Unit Cost',
-'number',
-0
-)+
-
-fieldHtml(
-'reason',
-'Reason',
-'text',
-1
-);
-
+async function saveSale(){
+ try{
+  let r=await sb.from('sales_orders').insert({customer_id:val('customer_id')||null,order_date:val('order_date'),notes:val('notes')||null}).select().single();if(r.error)throw r.error;
+  let l=await sb.from('sales_order_lines').insert({order_id:r.data.id,product_id:val('product_id'),location_id:val('location_id'),qty:Number(val('qty')),unit_price:Number(val('unit_price'))});if(l.error)throw l.error;
+  let paid=Number(val('paid')||0);if(paid){let u=await sb.from('sales_orders').update({paid}).eq('id',r.data.id);if(u.error)throw u.error}
+  closeModal();toast('Sale saved as draft. Post it to deduct stock.');load('sales')
+ }catch(e){toast(e.message)}
 }
+async function postSale(id){if(!confirm('Post this sale? Stock will be deducted.'))return;try{await rpc('post_sales_order',{p_order:id});toast('Sale posted');load('sales')}catch(e){toast(e.message)}}
 
-
-else if(key==='sales'){
-
-body=
-
-fieldHtml(
-'customer_id',
-'Customer UUID',
-'text',
-0
-)+
-
-fieldHtml(
-'order_date',
-'Order Date',
-'date',
-1,
-new Date().toISOString().slice(0,10)
-)+
-
-fieldHtml(
-'notes',
-'Notes',
-'text',
-0
-)+
-
-`<div class="panel full">
-<b>Sale Line</b>`;
-
-body+=
-
-fieldHtml(
-'product_id',
-'Product UUID',
-'text',
-1
-)+
-
-fieldHtml(
-'location_id',
-'Warehouse UUID',
-'text',
-1
-)+
-
-fieldHtml(
-'qty',
-'Quantity',
-'number',
-1
-)+
-
-fieldHtml(
-'unit_price',
-'Unit Price',
-'number',
-1
-)+
-
-'</div>';
-
+async function openPurchase(){
+ await loadCache();
+ const prods=cache.products.filter(x=>x.active),sup=cache.suppliers.filter(x=>x.active),locs=cache.locations.filter(x=>x.active);
+ const body=selectHtml('supplier_id','Supplier',sup.map(x=>({id:x.id,label:x.code+' - '+x.name})))+
+ field('order_date','Date','date',true,today())+
+ selectHtml('product_id','Item / Product',prods.map(x=>({id:x.id,label:x.sku+' - '+x.name})))+
+ `<input type="hidden" id="f_location_id" value="${locs[0]?.id||''}">`+
+ field('qty','Quantity','number',true)+field('unit_cost','Purchase Cost','number',true)+field('notes','Notes');
+ await openModal('New Purchase',body,'savePurchase()')
 }
-
-
-else if(key==='purchases'){
-
-body=
-
-fieldHtml(
-'supplier_id',
-'Supplier UUID',
-'text',
-0
-)+
-
-fieldHtml(
-'order_date',
-'Order Date',
-'date',
-1,
-new Date().toISOString().slice(0,10)
-)+
-
-`<div class="panel full">
-<b>Purchase Line</b>`;
-
-body+=
-
-fieldHtml(
-'product_id',
-'Product UUID',
-'text',
-1
-)+
-
-fieldHtml(
-'location_id',
-'Warehouse UUID',
-'text',
-1
-)+
-
-fieldHtml(
-'qty',
-'Quantity',
-'number',
-1
-)+
-
-fieldHtml(
-'unit_cost',
-'Unit Cost',
-'number',
-1
-)+
-
-'</div>';
-
+async function savePurchase(){
+ try{
+  let r=await sb.from('purchase_orders').insert({supplier_id:val('supplier_id')||null,order_date:val('order_date'),notes:val('notes')||null}).select().single();if(r.error)throw r.error;
+  let l=await sb.from('purchase_order_lines').insert({purchase_order_id:r.data.id,product_id:val('product_id'),location_id:val('location_id'),qty:Number(val('qty')),unit_cost:Number(val('unit_cost'))});if(l.error)throw l.error;
+  closeModal();toast('Purchase saved as draft. Receive it when stock arrives.');load('purchases')
+ }catch(e){toast(e.message)}
 }
+async function receivePurchase(id){if(!confirm('Receive this purchase into stock?'))return;try{await rpc('receive_purchase',{p_purchase:id});toast('Purchase received and stock added');load('purchases')}catch(e){toast(e.message)}}
 
-
-else if(key==='production'){
-
-body=
-
-fieldHtml(
-'batch_no',
-'Batch Number',
-'text',
-1
-)+
-
-fieldHtml(
-'production_date',
-'Production Date',
-'date',
-1,
-new Date().toISOString().slice(0,10)
-)+
-
-fieldHtml(
-'product_id',
-'Finished Product UUID',
-'text',
-1
-)+
-
-fieldHtml(
-'location_id',
-'Warehouse UUID',
-'text',
-1
-)+
-
-fieldHtml(
-'qty',
-'Finished Quantity',
-'number',
-1
-);
-
+async function openProduction(){
+ await loadCache();const prods=cache.products.filter(x=>x.active),locs=cache.locations.filter(x=>x.active);
+ const body=selectHtml('product_id','Finished Product',prods.map(x=>({id:x.id,label:x.sku+' - '+x.name})))+
+ `<input type="hidden" id="f_location_id" value="${locs[0]?.id||''}">`+
+ field('production_date','Date','date',true,today())+field('planned_qty','Quantity to Produce','number',true)+field('expiry_date','Expiry Date','date')+field('notes','Notes');
+ await openModal('New Production Batch',body,'saveProduction()')
 }
+async function saveProduction(){try{let r=await sb.from('production_batches').insert({production_date:val('production_date'),product_id:val('product_id'),location_id:val('location_id'),planned_qty:Number(val('planned_qty')),expiry_date:val('expiry_date')||null,notes:val('notes')||null});if(r.error)throw r.error;closeModal();toast('Production batch saved');load('production')}catch(e){toast(e.message)}}
+async function completeProduction(id){if(!confirm('Complete production? If a BOM exists, raw materials will be consumed automatically.'))return;try{await rpc('complete_production',{p_batch:id});toast('Production completed');load('production')}catch(e){toast(e.message)}}
 
-
-else if(key==='deliveries'){
-
-body=
-
-fieldHtml(
-'sales_order_id',
-'Sales Order UUID',
-'text',
-1
-)+
-
-fieldHtml(
-'delivery_date',
-'Delivery Date',
-'date',
-1,
-new Date().toISOString().slice(0,10)
-)+
-
-fieldHtml(
-'vehicle_no',
-'Vehicle Number',
-'text',
-1
-)+
-
-fieldHtml(
-'driver_name',
-'Driver Name',
-'text',
-1
-)+
-
-fieldHtml(
-'route',
-'Route',
-'text',
-0
-);
-
+async function openDelivery(){
+ await loadCache();const orders=cache.sales||[],rows=orders.filter(x=>x.id);
+ const body=selectHtml('sales_order_id','Sales Order',rows.map(x=>({id:x.id,label:x.order_no})))+
+ field('delivery_date','Date','date',true,today())+field('driver_name','Driver Name','text',true)+field('vehicle_no','Vehicle No')+field('route','Route')+field('cash_collected','Cash Collected','number')+field('notes','Notes');
+ await openModal('New Delivery',body,'saveDelivery()')
 }
+async function saveDelivery(){try{let r=await sb.from('deliveries').insert({sales_order_id:val('sales_order_id')||null,delivery_date:val('delivery_date'),driver_name:val('driver_name'),vehicle_no:val('vehicle_no'),route:val('route'),cash_collected:Number(val('cash_collected')||0),notes:val('notes')||null});if(r.error)throw r.error;closeModal();toast('Delivery saved');load('deliveries')}catch(e){toast(e.message)}}
 
-
-else if(key==='settings'){
-
-body=
-
-fieldHtml(
-'owner_pct',
-'Owner %',
-'number',
-1,
-'55'
-)+
-
-fieldHtml(
-'partner_pct',
-'Working Partner %',
-'number',
-1,
-'30'
-)+
-
-fieldHtml(
-'investor_pct',
-'Investor Pool %',
-'number',
-1,
-'15'
-);
-
+async function openExpense(){
+ await openModal('New Expense',field('expense_date','Date','date',true,today())+field('category','Category','text',true)+field('description','Description','text',true)+field('amount','Amount','number',true)+`<div class="field"><label>Paid From</label><select id="f_payment_method"><option>Cash</option><option>Bank</option></select></div>`,'saveExpense()')
 }
+async function saveExpense(){try{let o={expense_date:val('expense_date'),category:val('category'),description:val('description'),amount:Number(val('amount')),payment_method:val('payment_method')};let r=await sb.from('expenses').insert(o);if(r.error)throw r.error;await sb.from('cash_entries').insert({entry_date:o.expense_date,account:o.payment_method,entry_type:'expense',amount:o.amount,description:o.description});closeModal();toast('Expense saved');load('expenses')}catch(e){toast(e.message)}}
 
-
-document.getElementById('modalTitle')
-.textContent=
-'New '+key.replace('_',' ');
-
-
-document.getElementById('modalBody')
-.innerHTML=
-
-`<div class="formgrid">
-${body}
-</div>
-
-<div class="right">
-<button class="primary"
-onclick="saveForm('${key}')">
-Save
-</button>
-</div>`;
-
+async function openCash(){
+ await openModal('New Cash / Bank Entry',field('entry_date','Date','date',true,today())+`<div class="field"><label>Account</label><select id="f_account"><option>Cash</option><option>Bank</option></select></div><div class="field"><label>Type</label><select id="f_entry_type"><option>income</option><option>expense</option><option>capital</option></select></div>`+field('amount','Amount','number',true)+field('description','Description','text',true)+field('reference','Reference'),'saveCash()')
 }
+async function saveCash(){try{let r=await sb.from('cash_entries').insert({entry_date:val('entry_date'),account:val('account'),entry_type:val('entry_type'),amount:Number(val('amount')),description:val('description'),reference:val('reference')||null});if(r.error)throw r.error;closeModal();toast('Cash entry saved');load('cash')}catch(e){toast(e.message)}}
 
-
-function val(n){
-
-return document.getElementById('f_'+n)?.value;
-
+async function openCapital(){
+ await openModal('Add Investment',field('party_name','Investor / Owner / Partner','text',true)+`<div class="field"><label>Type</label><select id="f_party_type"><option>Owner</option><option>Partner</option><option>Investor</option></select></div>`+field('entry_date','Date','date',true,today())+field('amount','Investment Amount','number',true)+field('note','Note'),'saveCapital()')
 }
+async function saveCapital(){try{let o={party_name:val('party_name'),party_type:val('party_type'),entry_type:'investment',amount:Number(val('amount')),entry_date:val('entry_date'),note:val('note')};let r=await sb.from('capital_ledger').insert(o);if(r.error)throw r.error;await sb.from('cash_entries').insert({entry_date:o.entry_date,account:'Cash',entry_type:'capital',amount:o.amount,description:'Capital investment - '+o.party_name});closeModal();toast('Investment saved');load('capital')}catch(e){toast(e.message)}}
 
-
-function closeModal(){
-
-document.getElementById('modal')
-.classList.add('hidden');
-
+async function openPayment(customerId=''){
+ await loadCache();const cust=cache.customers.filter(x=>x.active),sup=cache.suppliers.filter(x=>x.active);
+ const body=selectHtml('customer_id','Customer',cust.map(x=>({id:x.id,label:x.code+' - '+x.name})))+field('amount','Amount','number',true)+`<div class="field"><label>Method</label><select id="f_method"><option>Cash</option><option>Bank</option></select></div>`+field('note','Note','text',true);
+ await openModal('Receive Customer Payment',body,'savePayment()');if(customerId)document.getElementById('f_customer_id').value=customerId
 }
-
-
-async function saveForm(key){
-
-try{
-
-
-if(basicDefs[key]){
-
-let d=basicDefs[key];
-
-let o={};
-
-
-d.fields.forEach(f=>{
-
-let v=val(f[0]);
-
-if(v!==''&&v!=null){
-
-o[f[0]]=
-f[2]==='number'
-?Number(v)
-:v;
-
+async function savePayment(){try{await rpc('record_payment',{p_party_type:'Customer',p_customer:val('customer_id'),p_supplier:null,p_amount:Number(val('amount')),p_method:val('method'),p_note:val('note')});closeModal();toast('Payment saved');load('customers')}catch(e){toast(e.message)}}
+async function openSupplierPayment(id){
+ await loadCache();const sup=cache.suppliers.filter(x=>x.active);
+ const body=selectHtml('supplier_id','Supplier',sup.map(x=>({id:x.id,label:x.code+' - '+x.name})))+field('amount','Amount','number',true)+`<div class="field"><label>Method</label><select id="f_method"><option>Cash</option><option>Bank</option></select></div>`+field('note','Note', 'text',true);
+ await openModal('Pay Supplier',body,'saveSupplierPayment()');document.getElementById('f_supplier_id').value=id
 }
+async function saveSupplierPayment(){try{await rpc('record_payment',{p_party_type:'Supplier',p_customer:null,p_supplier:val('supplier_id'),p_amount:Number(val('amount')),p_method:val('method'),p_note:val('note')});closeModal();toast('Supplier payment saved');load('suppliers')}catch(e){toast(e.message)}}
 
-});
-
-
-let r=await db
-.from(d.table)
-.insert(o);
-
-
-if(r.error)throw r.error;
-
+async function openEmployee(){
+ await openModal('New Employee',field('name','Name','text',true)+field('phone','Phone')+field('designation','Designation','text',true)+field('salary','Monthly Salary','number')+field('commission_rate','Commission %','number'),'saveEmployee()')
 }
-
-
-else if(key==='inventory'){
-
-await rpc(
-'post_inventory_transaction',
-{
-p_product_id:val('product_id'),
-p_location_id:val('location_id'),
-p_qty:Number(val('qty')),
-p_unit_cost:Number(val('unit_cost')||0),
-p_reason:val('reason'),
-p_ref_type:'manual',
-p_ref_id:null
-}
-);
-
-}
-
-
-else if(key==='sales'){
-
-let o={
-
-customer_id:val('customer_id')||null,
-
-order_date:val('order_date'),
-
-notes:val('notes')||null,
-
-status:'draft'
-
-};
-
-
-let r=await db
-.from('sales_orders')
-.insert(o)
-.select()
-.single();
-
-
-if(r.error)throw r.error;
-
-
-let l=await db
-.from('sales_order_lines')
-.insert({
-
-order_id:r.data.id,
-
-product_id:val('product_id'),
-
-location_id:val('location_id'),
-
-qty:Number(val('qty')),
-
-unit_price:Number(val('unit_price'))
-
-});
-
-
-if(l.error)throw l.error;
-
-}
-
-
-else if(key==='purchases'){
-
-let r=await db
-.from('purchase_orders')
-.insert({
-
-supplier_id:val('supplier_id')||null,
-
-order_date:val('order_date'),
-
-status:'draft'
-
-})
-.select()
-.single();
-
-
-if(r.error)throw r.error;
-
-
-let l=await db
-.from('purchase_order_lines')
-.insert({
-
-purchase_order_id:r.data.id,
-
-product_id:val('product_id'),
-
-location_id:val('location_id'),
-
-qty:Number(val('qty')),
-
-unit_cost:Number(val('unit_cost'))
-
-});
-
-
-if(l.error)throw l.error;
-
-}
-
-
-else if(key==='production'){
-
-let r=await db
-.from('production_batches')
-.insert({
-
-batch_no:val('batch_no'),
-
-production_date:val('production_date'),
-
-product_id:val('product_id'),
-
-location_id:val('location_id'),
-
-qty:Number(val('qty')),
-
-status:'planned'
-
-});
-
-
-if(r.error)throw r.error;
-
-}
-
-
-else if(key==='deliveries'){
-
-let r=await db
-.from('deliveries')
-.insert({
-
-sales_order_id:val('sales_order_id'),
-
-delivery_date:val('delivery_date'),
-
-vehicle_no:val('vehicle_no'),
-
-driver_name:val('driver_name'),
-
-route:val('route')||null,
-
-status:'planned'
-
-});
-
-
-if(r.error)throw r.error;
-
-}
-
-
-else if(key==='settings'){
-
-let a=Number(val('owner_pct'));
-
-let b=Number(val('partner_pct'));
-
-let c=Number(val('investor_pct'));
-
-
-if(a+b+c!==100)
-throw Error(
-'Ownership percentages must total 100%.'
-);
-
-
-for(
-const [k,v] of [
-['owner_pct',a],
-['partner_pct',b],
-['investor_pct',c]
-]){
-
-let r=await db
-.from('company_settings')
-.upsert({
-key:k,
-value:String(v)
-});
-
-
-if(r.error)throw r.error;
-
-}
-
-}
-
-
-closeModal();
-
-toast('Saved successfully');
-
-await load(current);
-
-
-}catch(e){
-
-toast(e.message||String(e));
-
-}
-
-}
-
-
-async function postSale(id){
-
-if(!confirm(
-'Post this sale? Stock will be deducted.'
-))return;
-
-
-try{
-
-await rpc(
-'confirm_sales_order',
-{p_order:id}
-);
-
-toast('Sale posted');
-
-await load('sales');
-
-
-}catch(e){
-
-toast(e.message||String(e));
-
-}
-
-}
-
-
-async function completeProd(id){
-
-if(!confirm(
-'Complete this batch? Inventory will be updated.'
-))return;
-
-
-try{
-
-await rpc(
-'complete_production',
-{p_batch:id}
-);
-
-toast('Production completed');
-
-await load('production');
-
-
-}catch(e){
-
-toast(e.message||String(e));
-
-}
-
-}
-
-
-restoreSession();
-
+async function saveEmployee(){try{let o={name:val('name'),phone:val('phone'),designation:val('designation'),salary:Number(val('salary')||0),commission_rate:Number(val('commission_rate')||0)};let r=await sb.from('employees').insert(o);if(r.error)throw r.error;closeModal();toast('Employee saved');load('employees')}catch(e){toast(e.message)}}
+
+(async()=>{
+ try{
+  const c=localStorage.getItem('clearon.cfg');if(c){const x=JSON.parse(c);sburl.value=x.url||'';sbkey.value=x.key||''}
+  if(sburl.value&&sbkey.value){sb=supabase.createClient(sburl.value,sbkey.value,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});const s=await sb.auth.getSession();if(s.data.session)await start(s.data.session.user)}
+ }catch(e){console.log(e)}
+})();
 </script>
-
 </body>
 </html>
