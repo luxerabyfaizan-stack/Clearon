@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CLEARON ERP â€” Business Management</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:#f5f7fb;color:#172033}button,input,select,textarea{font:inherit}button{cursor:pointer;border:0}.hidden{display:none!important}
+#login{min-height:100vh;display:grid;place-items:center;background:linear-gradient(135deg,#07111f,#12375b)}.login-card{width:min(430px,92vw);background:#fff;border-radius:22px;padding:28px;box-shadow:0 25px 80px #0005}.brand{font-size:30px;font-weight:900;letter-spacing:2px}.muted{color:#718096}.field{margin:12px 0}.field label{display:block;font-size:12px;font-weight:700;margin-bottom:6px}.field input,.field select,.field textarea{width:100%;padding:11px 12px;border:1px solid #d9e0ea;border-radius:10px;background:#fff}.primary{background:#1167d8;color:#fff;padding:11px 16px;border-radius:10px;font-weight:700}.danger{background:#d9363e;color:#fff;padding:9px 13px;border-radius:9px}.ghost{background:#edf2f7;color:#27364a;padding:9px 13px;border-radius:9px}.success{background:#159447;color:#fff;padding:9px 13px;border-radius:9px}
+#app{display:none;min-height:100vh}.sidebar{position:fixed;left:0;top:0;bottom:0;width:245px;background:#0c1726;color:#c9d5e5;padding:18px;overflow:auto}.sidebrand{color:#fff;font-size:23px;font-weight:900;letter-spacing:2px;margin:4px 8px 22px}.nav button{display:block;width:100%;text-align:left;background:transparent;color:#bdc9d9;padding:10px 12px;border-radius:9px;margin:3px 0}.nav button:hover,.nav button.active{background:#1a2d46;color:#fff}.main{margin-left:245px;padding:24px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px}.top h1{margin:0;font-size:27px}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{background:#fff;border:1px solid #e5eaf0;border-radius:14px;padding:18px;box-shadow:0 3px 15px #13223808}.metric{font-size:26px;font-weight:900;margin-top:8px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.panel{background:#fff;border:1px solid #e5eaf0;border-radius:14px;padding:18px;margin-bottom:16px}.panel h3{margin:0 0 14px}.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:650px}th,td{padding:10px;border-bottom:1px solid #edf0f4;text-align:left;font-size:13px}th{background:#f7f9fc;font-size:12px}.badge{display:inline-block;padding:4px 8px;border-radius:20px;background:#eaf1fb;font-size:11px;font-weight:700}.modal{position:fixed;inset:0;background:#07111f99;display:grid;place-items:center;padding:16px;z-index:20}.modalbox{background:#fff;width:min(720px,96vw);max-height:92vh;overflow:auto;border-radius:16px;padding:20px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.formgrid .full{grid-column:1/-1}.toast{position:fixed;right:18px;bottom:18px;background:#172033;color:#fff;padding:12px 16px;border-radius:10px;z-index:50;display:none}.hamb{display:none;background:#0c1726;color:#fff;padding:9px;border-radius:8px}.small{font-size:12px}.kpi-note{font-size:12px;color:#718096}.right{text-align:right}.danger-text{color:#c53030}
+@media(max-width:900px){.sidebar{transform:translateX(-100%);transition:.2s;z-index:30}.sidebar.open{transform:none}.main{margin-left:0;padding:16px}.hamb{display:block}.cards{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}}
+@media(max-width:550px){.cards{grid-template-columns:1fr}.formgrid{grid-template-columns:1fr}.formgrid .full{grid-column:auto}.top h1{font-size:22px}}
+</style>
+</head>
+<body>
+<section id="login">
+<div class="login-card">
+<div class="brand">CLEARON</div><div class="muted" style="margin:5px 0 20px">Drinking Water ERP</div>
+<div class="field"><label>Supabase Project URL</label><input id="sburl" placeholder="https://xxxx.supabase.co"></div>
+<div class="field"><label>Publishable / Anon Key</label><input id="sbkey" type="password" placeholder="eyJ..."></div>
+<div class="field"><label>Email</label><input id="email" type="email"></div>
+<div class="field"><label>Password</label><input id="password" type="password"></div>
+<button class="primary" style="width:100%" onclick="login()">Sign in</button>
+<p class="small muted">Run the supplied SQL once in Supabase SQL Editor, then create your first Auth user.</p>
+</div></section>
+
+<section id="app">
+<aside class="sidebar" id="sidebar">
+<div class="sidebrand">CLEARON</div>
+<div class="nav" id="nav"></div>
+<button class="ghost" style="width:100%;margin-top:14px" onclick="logout()">Logout</button>
+</aside>
+<main class="main">
+<div class="top"><div style="display:flex;gap:10px;align-items:center"><button class="hamb" onclick="toggleSide()">â˜°</button><h1 id="title">Dashboard</h1></div><div id="userbox" class="small muted"></div></div>
+<div id="content"></div>
+</main>
+</section>
+<div class="modal hidden" id="modal"><div class="modalbox"><div class="top"><h3 id="modalTitle">Form</h3><button class="ghost" onclick="closeModal()">Close</button></div><div id="modalBody"></div></div></div>
+<div id="toast" class="toast"></div>
+
+<script>
+let db=null, profile=null, current='dashboard', cache={};
+
+const modules=[
+['dashboard','ðŸ“Š Dashboard'],['customers','ðŸ‘¥ Customers'],['suppliers','ðŸšš Suppliers'],
+['products','ðŸ§´ Products'],['locations','ðŸ­ Warehouses'],['inventory','ðŸ“¦ Inventory'],
+['purchases','ðŸ›’ Purchases'],['sales','ðŸ§¾ Sales'],['production','âš™ï¸ Production'],
+['qc','ðŸ”¬ QC / Batches'],['deliveries','ðŸš› Deliveries'],['expenses','ðŸ’¸ Expenses'],
+['cash','ðŸ’° Cash / Bank'],['capital','ðŸ¤ Capital / Investors'],['employees','ðŸ‘· Employees'],
+['reports','ðŸ“ˆ Reports'],['settings','âš™ï¸ Settings']
+];
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const money=n=>'PKR '+Number(n||0).toLocaleString('en-PK',{minimumFractionDigits:2,maximumFractionDigits:2});
+function toast(s){let x=document.getElementById('toast');x.textContent=s;x.style.display='block';setTimeout(()=>x.style.display='none',2800)}
+function toggleSide(){document.getElementById('sidebar').classList.toggle('open')}
+async function login(){
+ try{
+  const url=document.getElementById('sburl').value.trim(), key=document.getElementById('sbkey').value.trim();
+  localStorage.setItem('clearon.cfg',JSON.stringify({url,key}));
+  db=supabase.createClient(url,key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+  const {data,error}=await db.auth.signInWithPassword({email:document.getElementById('email').value,password:document.getElementById('password').value});
+  if(error)throw error;
+  await start(data.user);
+ }catch(e){toast(e.message)}
+}
+async function start(user){
+ const r=await db.from('profiles').select('*').eq('id',user.id).single();
+ if(r.error)throw r.error; profile=r.data;
+ document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';
+ document.getElementById('userbox').textContent=(profile.full_name||user.email)+' â€¢ '+profile.role;
+ renderNav();load(current);
+}
+async function logout(){await db.auth.signOut();location.reload()}
+function renderNav(){document.getElementById('nav').innerHTML=modules.map(x=>`<button class="${x[0]==current?'active':''}" onclick="load('${x[0]}')">${x[1]}</button>`).join('')}
+async function load(m){current=m;document.getElementById('title').textContent=modules.find(x=>x[0]==m)?.[1].replace(/^.\s/,'')||m;renderNav();document.getElementById('content').innerHTML='<div class="panel">Loading...</div>';try{await ({dashboard:dashboard,customers:customers,suppliers:suppliers,products:products,locations:locations,inventory:inventory,purchases:purchases,sales:sales,production:production,qc:qc,deliveries:deliveries,expenses:expenses,cash:cash,capital:capital,employees:employees,reports:reports,settings:settings}[m])()}catch(e){document.getElementById('content').innerHTML=`<div class="panel"><b>Error:</b> ${esc(e.message)}</div>`}}
+async function q(table,cols='*'){let r=await db.from(table).select(cols).order('created_at',{ascending:false}).limit(500);if(r.error)throw r.error;return r.data||[]}
+async function rpc(fn,args){let r=await db.rpc(fn,args);if(r.error)throw r.error;return r.data}
+function table(rows,cols){if(!rows.length)return '<div class="muted">No records yet.</div>';return `<div class="table-wrap"><table><thead><tr>${cols.map(c=>`<th>${esc(c.label)}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${cols.map(c=>`<td>${c.f?c.f(r):esc(r[c.k])}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}
+function addBtn(label,fn='') {return `<button class="primary" onclick="${fn}">${label}</button>`}
+
+async function dashboard(){
+ let d=await q('v_dashboard');let x=d[0]||{};
+ document.getElementById('content').innerHTML=`<div class="cards">
+ <div class="card"><div class="muted">Sales</div><div class="metric">${money(x.revenue)}</div><div class="kpi-note">Posted sales</div></div>
+ <div class="card"><div class="muted">COGS</div><div class="metric">${money(x.cogs)}</div><div class="kpi-note">Cost of goods sold</div></div>
+ <div class="card"><div class="muted">Expenses</div><div class="metric">${money(x.expenses)}</div><div class="kpi-note">Operating expenses</div></div>
+ <div class="card"><div class="muted">Net Profit</div><div class="metric">${money(Number(x.revenue||0)-Number(x.cogs||0)-Number(x.expenses||0))}</div><div class="kpi-note">Current posted activity</div></div></div>
+ <div class="grid" style="margin-top:16px"><div class="panel"><h3>Operational flow</h3><p>Purchase â†’ Receive Stock â†’ Production â†’ QC â†’ Finished Stock â†’ Sale â†’ Delivery â†’ Payment â†’ Profit</p><p class="muted small">Every stock movement is recorded in the inventory ledger. Posted sales and completed production use database transactions.</p></div>
+ <div class="panel"><h3>Quick actions</h3><div class="toolbar">${addBtn('New Customer',"openForm('customers')")}${addBtn('New Purchase',"openForm('purchases')")}${addBtn('New Sale',"openForm('sales')")}${addBtn('Production Batch',"openForm('production')")}</div></div></div>`;
+}
+
+const basicDefs={
+customers:{title:'Customers',table:'customers',fields:[['name','Name','text',1],['phone','Phone','text',1],['address','Address','text',1],['credit_limit','Credit Limit','number',0]]},
+suppliers:{title:'Suppliers',table:'suppliers',fields:[['name','Name','text',1],['phone','Phone','text',1],['address','Address','text',1],['payment_terms','Payment Terms','text',0]]},
+products:{title:'Products',table:'products',fields:[['sku','SKU','text',1],['name','Name','text',1],['size_ml','Size (ml)','number',1],['unit','Unit','text',1],['sale_price','Sale Price','number',1],['cost_price','Cost Price','number',0],['reorder_level','Reorder Level','number',0]]},
+locations:{title:'Warehouses / Locations',table:'inventory_locations',fields:[['name','Location Name','text',1],['location_type','Type','text',1],['address','Address','text',0]]},
+expenses:{title:'Expenses',table:'expenses',fields:[['expense_date','Date','date',1],['category','Category','text',1],['description','Description','text',1],['amount','Amount','number',1],['payment_method','Payment Method','text',0]]},
+cash:{title:'Cash / Bank Entries',table:'cash_entries',fields:[['entry_date','Date','date',1],['account','Account','text',1],['entry_type','Type (income/expense/transfer)','text',1],['amount','Amount','number',1],['description','Description','text',1],['reference','Reference','text',0]]},
+capital:{title:'Capital / Investors Ledger',table:'capital_ledger',fields:[['party_name','Party','text',1],['entry_date','Date','date',1],['entry_type','Type (capital/draw/profit)','text',1],['amount','Amount','number',1],['notes','Notes','text',0]]},
+employees:{title:'Employees',table:'employees',fields:[['name','Name','text',1],['phone','Phone','text',0],['designation','Designation','text',1],['salary','Monthly Salary','number',0],['commission_rate','Commission %','number',0]]}
+};
+async function basic(key){
+ let d=basicDefs[key],rows=await q(d.table);
+ let cols=d.fields.map(f=>({label:f[1],k:f[0],f:r=>f[0].includes('amount')||f[0].includes('price')||f[0]=='salary'?money(r[f[0]]):null}));
+ document.getElementById('content').innerHTML=`<div class="panel"><div class="toolbar">${addBtn('ï¼‹ New',`openForm('${key}')`)}<button class="ghost" onclick="load('${key}')">Refresh</button></div>${table(rows,cols)}</div>`;
+}
+async function customers(){await basic('customers')}async function suppliers(){await basic('suppliers')}async function products(){await basic('products')}async function locations(){await basic('locations')}async function expenses(){await basic('expenses')}async function cash(){await basic('cash')}async function capital(){await basic('capital')}async function employees(){await basic('employees')}
+
+async function inventory(){
+ let rows=await q('v_inventory');
+ document.getElementById('content').innerHTML=`<div class="panel"><div class="toolbar">${addBtn('ï¼‹ Stock Adjustment',"openForm('inventory')")}<button class="ghost" onclick="load('inventory')">Refresh</button></div>${table(rows,[{label:'SKU',k:'sku'},{label:'Product',k:'product_name'},{label:'Location',k:'location_name'},{label:'Qty',k:'qty'},{label:'Avg Cost',k:'avg_cost',f:r=>money(r.avg_cost)},{label:'Value',k:'stock_value',f:r=>money(r.stock_value)}])}</div>`;
+}
+async function purchases(){
+ let rows=await q('purchase_orders');
+ document.getElementById('content').innerHTML=`<div class="panel"><div class="toolbar">${addBtn('ï¼‹ New Purchase',"openForm('purchases')")}<button class="ghost" onclick="load('purchases')">Refresh</button></div>${table(rows,[{label:'PO',k:'po_no'},{label:'Supplier',k:'supplier_name'},{label:'Date',k:'order_date'},{label:'Total',k:'total',f:r=>money(r.total)},{label:'Status',k:'status',f:r=>`<span class="badge">${esc(r.status)}</span>`}])}<p class="small muted">Create a purchase header, then use the line-item section in the purchase form to receive stock.</p></div>`;
+}
+async function sales(){
+ let rows=await q('sales_orders');
+ document.getElementById('content').innerHTML=`<div class="panel"><div class="toolbar">${addBtn('ï¼‹ New Sale',"openForm('sales')")}<button class="ghost" onclick="load('sales')">Refresh</button></div>${table(rows,[{label:'Order',k:'order_no'},{label:'Customer',k:'customer_name'},{label:'Date',k:'order_date'},{label:'Total',k:'total',f:r=>money(r.total)},{label:'Status',k:'status',f:r=>`<span class="badge">${esc(r.status)}</span>`},{label:'Action',k:'id',f:r=>r.status==='draft'?`<button class="success" onclick="postSale('${r.id}')">Post</button>`:''}])}<p class="small muted">Posting a sale atomically deducts inventory, calculates COGS, records revenue and updates receivables.</p></div>`;
+}
+async function production(){
+ let rows=await q('production_batches');
+ document.getElementById('content').innerHTML=`<div class="panel"><div class="toolbar">${addBtn('ï¼‹ New Batch',"openForm('production')")}<button class="ghost" onclick="load('production')">Refresh</button></div>${table(rows,[{label:'Batch',k:'batch_no'},{label:'Product',k:'product_name'},{label:'Qty',k:'qty'},{label:'Date',k:'production_date'},{label:'Status',k:'status',f:r=>`<span class="badge">${esc(r.status)}</span>`},{label:'Action',k:'id',f:r=>r.status==='planned'?`<button class="success" onclick="completeProd('${r.id}')">Complete</button>`:''}])}</div>`;
+}
+async function qc(){
+ let rows=await q('qc_checks');
+ document.getElementById('content').innerHTML=`<div class="panel"><div class="toolbar"><button class="ghost" onclick="load('qc')">Refresh</button></div>${table(rows,[{label:'Batch',k:'batch_no'},{label:'Check',k:'check_name'},{label:'Result',k:'result'},{label:'Checked',k:'checked_at'},{label:'Notes',k:'notes'}])}</div>`;
+}
+async function deliveries(){
+ let rows=await q('deliveries');
+ document.getElementById('content').innerHTML=`<div class="panel"><div class="toolbar">${addBtn('ï¼‹ New Delivery',"openForm('deliveries')")}<button class="ghost" onclick="load('deliveries')">Refresh</button></div>${table(rows,[{label:'Delivery',k:'delivery_no'},{label:'Order',k:'order_no'},{label:'Vehicle',k:'vehicle_no'},{label:'Driver',k:'driver_name'},{label:'Date',k:'delivery_date'},{label:'Status',k:'status'}])}</div>`;
+}
+async function reports(){
+ let d=await q('v_dashboard');let x=d[0]||{};
+ document.getElementById('content').innerHTML=`<div class="grid">
+ <div class="panel"><h3>Profit & Loss</h3>${table([{name:'Revenue',v:x.revenue},{name:'COGS',v:x.cogs},{name:'Gross Profit',v:Number(x.revenue||0)-Number(x.cogs||0)},{name:'Operating Expenses',v:x.expenses},{name:'Net Profit',v:Number(x.revenue||0)-Number(x.cogs||0)-Number(x.expenses||0)}],[{label:'Account',k:'name'},{label:'Amount',k:'v',f:r=>money(r.v)}])}</div>
+ <div class="panel"><h3>Management Controls</h3><p>Ownership: Owner <b>55%</b> â€¢ Working Partner <b>30%</b> â€¢ Investor Pool <b>15%</b></p><p class="muted small">Use Capital / Investors for actual capital movements. Profit distribution should be approved and recorded separately.</p></div></div>`;
+}
+async function settings(){
+ let rows=await q('company_settings');
+ document.getElementById('content').innerHTML=`<div class="panel"><h3>Company Settings</h3>${table(rows,[{label:'Key',k:'key'},{label:'Value',k:'value'}])}<button class="primary" onclick="openForm('settings')">Update Ownership / Setting</button></div>`;
+}
+
+function fieldHtml(name,label,type,required,value=''){return `<div class="field"><label>${esc(label)}</label><input id="f_${name}" type="${type}" value="${esc(value)}" ${required?'required':''}></div>`}
+async function openForm(key){
+ document.getElementById('modal').classList.remove('hidden');
+ let body='';
+ if(basicDefs[key]) body=basicDefs[key].fields.map(f=>fieldHtml(f[0],f[1],f[2],f[3])).join('');
+ else if(key==='inventory') body=fieldHtml('product_id','Product UUID','text',1)+fieldHtml('location_id','Location UUID','text',1)+fieldHtml('qty','Quantity (+ add / - remove)','number',1)+fieldHtml('unit_cost','Unit Cost','number',0)+fieldHtml('reason','Reason','text',1);
+ else if(key==='sales') body=fieldHtml('customer_id','Customer UUID','text',0)+fieldHtml('order_date','Order Date','date',1)+fieldHtml('notes','Notes','text',0)+`<div class="panel full"><b>Line 1</b>${fieldHtml('product_id','Product UUID','text',1)}${fieldHtml('location_id','Warehouse UUID','text',1)}${fieldHtml('qty','Quantity','number',1)}${fieldHtml('unit_price','Unit Price','number',1)}</div>`;
+ else if(key==='purchases') body=fieldHtml('supplier_id','Supplier UUID','text',0)+fieldHtml('order_date','Order Date','date',1)+`<div class="panel"><b>Line 1</b>${fieldHtml('product_id','Product UUID','text',1)}${fieldHtml('location_id','Warehouse UUID','text',1)}${fieldHtml('qty','Quantity','number',1)}${fieldHtml('unit_cost','Unit Cost','number',1)}</div>`;
+ else if(key==='production') body=fieldHtml('batch_no','Batch No','text',1)+fieldHtml('production_date','Production Date','date',1)+fieldHtml('product_id','Finished Product UUID','text',1)+fieldHtml('location_id','Warehouse UUID','text',1)+fieldHtml('qty','Finished Qty','number',1);
+ else if(key==='deliveries') body=fieldHtml('sales_order_id','Sales Order UUID','text',1)+fieldHtml('delivery_date','Date','date',1)+fieldHtml('vehicle_no','Vehicle No','text',1)+fieldHtml('driver_name','Driver Name','text',1)+fieldHtml('route','Route','text',0);
+ else if(key==='settings') body=fieldHtml('owner_pct','Owner %','number',1,'55')+fieldHtml('partner_pct','Working Partner %','number',1,'30')+fieldHtml('investor_pct','Investor Pool %','number',1,'15');
+ document.getElementById('modalTitle').textContent='New '+key.replace('_',' ');
+ document.getElementById('modalBody').innerHTML=`<div class="formgrid">${body}</div><div class="right"><button class="primary" onclick="saveForm('${key}')">Save</button></div>`;
+}
+function val(n){return document.getElementById('f_'+n)?.value}
+function closeModal(){document.getElementById('modal').classList.add('hidden')}
+async function saveForm(key){
+ try{
+  if(basicDefs[key]){
+   let d=basicDefs[key],o={};d.fields.forEach(f=>{let v=val(f[0]);if(v!==''&&v!=null)o[f[0]]=f[2]==='number'?Number(v):v});let r=await db.from(d.table).insert(o);if(r.error)throw r.error;
+  } else if(key==='inventory'){
+   await rpc('post_inventory_transaction',{p_product_id:val('product_id'),p_location_id:val('location_id'),p_qty:Number(val('qty')),p_unit_cost:Number(val('unit_cost')||0),p_reason:val('reason'),p_ref_type:'manual',p_ref_id:null});
+  } else if(key==='sales'){
+   let o={customer_id:val('customer_id')||null,order_date:val('order_date'),notes:val('notes')||null,status:'draft'};let r=await db.from('sales_orders').insert(o).select().single();if(r.error)throw r.error;
+   let l=await db.from('sales_order_lines').insert({order_id:r.data.id,product_id:val('product_id'),location_id:val('location_id'),qty:Number(val('qty')),unit_price:Number(val('unit_price'))});if(l.error)throw l.error;
+  } else if(key==='purchases'){
+   let r=await db.from('purchase_orders').insert({supplier_id:val('supplier_id')||null,order_date:val('order_date'),status:'draft'}).select().single();if(r.error)throw r.error;
+   let l=await db.from('purchase_order_lines').insert({purchase_order_id:r.data.id,product_id:val('product_id'),location_id:val('location_id'),qty:Number(val('qty')),unit_cost:Number(val('unit_cost'))});if(l.error)throw l.error;
+  } else if(key==='production'){
+   let r=await db.from('production_batches').insert({batch_no:val('batch_no'),production_date:val('production_date'),product_id:val('product_id'),location_id:val('location_id'),qty:Number(val('qty')),status:'planned'});if(r.error)throw r.error;
+  } else if(key==='deliveries'){
+   let r=await db.from('deliveries').insert({sales_order_id:val('sales_order_id'),delivery_date:val('delivery_date'),vehicle_no:val('vehicle_no'),driver_name:val('driver_name'),route:val('route'),status:'planned'});if(r.error)throw r.error;
+  } else if(key==='settings'){
+   let a=Number(val('owner_pct')),b=Number(val('partner_pct')),c=Number(val('investor_pct'));if(a+b+c!==100)throw Error('Ownership percentages must total 100%.');
+   for(const [k,v] of [['owner_pct',a],['partner_pct',b],['investor_pct',c]]){let r=await db.from('company_settings').upsert({key:k,value:String(v)});if(r.error)throw r.error}
+  }
+  closeModal();toast('Saved successfully');load(current);
+ }catch(e){toast(e.message)}
+}
+async function postSale(id){if(!confirm('Post this sale? Stock will be deducted and accounting entries created.'))return;try{await rpc('confirm_sales_order',{p_order:id});toast('Sale posted');load('sales')}catch(e){toast(e.message)}}
+async function completeProd(id){if(!confirm('Complete this batch? BOM consumption and finished stock will be posted.'))return;try{await rpc('complete_production',{p_batch:id});toast('Production completed');load('production')}catch(e){toast(e.message)}}
+
+(async()=>{let c=localStorage.getItem('clearon.cfg');if(c){try{let x=JSON.parse(c);sburl.value=x.url;sbkey.value=x.key}catch(e){}}if(window.supabase){let x=await supabase.createClient?null:null}})();
+</script>
+</body></html>
